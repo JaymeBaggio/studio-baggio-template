@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 // Lenis and scroll-based approach removed.
 // The deck now uses event-driven pagination — each scroll gesture

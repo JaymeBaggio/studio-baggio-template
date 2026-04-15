@@ -1,6 +1,4 @@
 import Slide from "../Slide";
-import { copy } from "../../data/placeholders";
-
 export default function StatementSlide() {
   const lines = ["We build authority", "through clarity, proof", "and strategic visibility."];
   return (
