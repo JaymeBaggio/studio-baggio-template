@@ -4,7 +4,6 @@ import gsap from "gsap";
 import { useInteractivePhone } from "./InteractivePhoneContext";
 import DockedPhone3D from "./DockedPhone3D";
 import ExpandedPhone3D from "./ExpandedPhone3D";
-import PhoneContent from "./PhoneContent";
 
 // Architecture: TWO R3F Canvases — docked (in slide layout) and expanded
 // (portal at body). Both render the SAME iPhone GLB so the visual continuity
@@ -130,44 +129,10 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
               }}
             />
 
-            {/* The R3F expanded phone Canvas — renders the 3D iPhone GLB only */}
+            {/* The R3F expanded phone Canvas — iPhone GLB + Html transform
+                attached inside the screen face for content. Single source. */}
             <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
               <ExpandedPhone3D onClose={handleClose} />
-            </div>
-
-            {/* Email content overlay — sized in vh units to land exactly on
-                the iPhone screen rect rendered in the R3F canvas.
-                Maths (phone at BASE_SCALE 3, camera z=4 fov=35):
-                - Visible viewport-height units = 2 * 4 * tan(17.5°) = 2.52
-                - Phone height = 1.92 world ≈ 76vh
-                - Phone width = 1.92 * (9/19.5) ≈ 35vh
-                - iPhone screen ≈ 87% body height (allowing for dynamic island
-                  + bottom indicator), ≈ 84% body width (proper bezel) =
-                  29vh wide × 66vh tall
-                - Screen corner radius ≈ 5vh */}
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "29vh",
-                height: "66vh",
-                background: "#F5F0EB",
-                borderRadius: "5vh",
-                overflow: "hidden",
-                zIndex: 2,
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div
-                className="w-full h-full overflow-y-auto"
-                style={{ WebkitOverflowScrolling: "touch", background: "#F5F0EB" }}
-                onWheel={(e) => e.stopPropagation()}
-                onTouchMove={(e) => e.stopPropagation()}
-              >
-                <PhoneContent scrollable={true} />
-              </div>
             </div>
 
             {/* Close button — top-right */}
