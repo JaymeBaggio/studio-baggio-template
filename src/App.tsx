@@ -48,7 +48,14 @@ function App() {
         />
 
         {/* 4. Divider: Approach */}
-        <DividerSlide id="divider-a" letter="A" kicker="THE APPROACH" title="Strategy in practice" />
+        <DividerSlide
+          id="divider-a"
+          number="01"
+          kicker="THE APPROACH"
+          title="Strategy in practice"
+          descriptor="How we map opportunity, position the work, and build the systems that compound over time."
+          variant="editorial"
+        />
 
         {/* 5. Platform Reach — multi-channel overview with device mockups */}
         <PlatformReachSlide />
@@ -82,7 +89,15 @@ function App() {
         <DeviceMockupSlide />
 
         {/* 11. Divider: Proof */}
-        <DividerSlide id="divider-p" letter="P" kicker="THE PROOF" title="Results that compound" />
+        <DividerSlide
+          id="divider-p"
+          number="02"
+          kicker="THE PROOF"
+          title="Results that compound"
+          descriptor="Case studies, measurable outcomes, and the specific projects where the strategy earned its keep."
+          variant="image"
+          image="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=1080&fit=crop&auto=format"
+        />
 
         {/* 12. Split: photo L, text R — Case study 1 */}
         <SplitSlide
@@ -143,7 +158,14 @@ function App() {
         <LogoWallSlide />
 
         {/* 20. Divider: Services */}
-        <DividerSlide id="divider-s" letter="S" kicker="THE SERVICES" title="What we do" />
+        <DividerSlide
+          id="divider-s"
+          number="03"
+          kicker="THE SERVICES"
+          title="What we do"
+          descriptor="Strategic positioning, AI adoption, content systems, and the advisory work that ties them together."
+          variant="editorial"
+        />
 
         {/* 21. Split: photo L, text R — Services */}
         <SplitSlide
@@ -179,7 +201,15 @@ function App() {
         />
 
         {/* 23. Divider: Contact */}
-        <DividerSlide id="divider-c" letter="C" kicker="GET IN TOUCH" title="Start a conversation" />
+        <DividerSlide
+          id="divider-c"
+          number="04"
+          kicker="GET IN TOUCH"
+          title="Start a conversation"
+          descriptor="Direct contact, partnership enquiries, and the small steps before any engagement begins."
+          variant="image"
+          image="https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=1920&h=1080&fit=crop&auto=format"
+        />
 
         {/* 24. Closing */}
         <ClosingSlide />
