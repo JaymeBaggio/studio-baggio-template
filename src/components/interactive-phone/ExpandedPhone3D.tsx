@@ -61,38 +61,53 @@ function FlatIPhone({ overlayRef }: { overlayRef: React.RefObject<HTMLDivElement
     group.current.rotation.set(-0.1, Math.PI - 0.4, 0);
   }, []);
 
-  // Reusable Vector3s to avoid allocation in useFrame
+  // Reusable Vector3s to avoid allocation in useFrame.
+  // Only 4 corners — we project the visible front face, not the full
+  // 3D bounding box (which would expand the projected rect when phone
+  // is at any angle, making the overlay larger than the visible screen).
   const tmpV = useRef(new THREE.Vector3());
   const corners = useRef<THREE.Vector3[]>([
-    new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
     new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
   ]);
 
   useFrame(() => {
     if (!group.current) return;
 
-    // Lerp to face-camera (Y=π so the GLB's native -Z screen turns to +Z = camera direction)
-    group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 0, 0.07);
-    group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, Math.PI, 0.07);
-    group.current.scale.lerp(new THREE.Vector3(BASE_SCALE, BASE_SCALE, BASE_SCALE), 0.07);
+    // Lerp to face-camera (Y=π so the GLB's native -Z screen turns to +Z = camera direction).
+    // Snap to target once close enough so the projection stabilises and the
+    // overlay doesn't drift around as the lerp asymptotically approaches.
+    const targetRotY = Math.PI;
+    const targetScale = BASE_SCALE;
+    const rotXDelta = Math.abs(group.current.rotation.x - 0);
+    const rotYDelta = Math.abs(group.current.rotation.y - targetRotY);
+    const scaleDelta = Math.abs(group.current.scale.x - targetScale);
+    const SNAP_THRESHOLD = 0.005;
+    if (rotXDelta < SNAP_THRESHOLD && rotYDelta < SNAP_THRESHOLD && scaleDelta < SNAP_THRESHOLD) {
+      group.current.rotation.x = 0;
+      group.current.rotation.y = targetRotY;
+      group.current.scale.set(targetScale, targetScale, targetScale);
+    } else {
+      group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 0, 0.12);
+      group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, targetRotY, 0.12);
+      group.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.12);
+    }
 
-    // Update overlay position from projected screen mesh bounds
+    // Update overlay position from projected screen mesh FRONT FACE only.
     const overlay = overlayRef.current;
     const box = screenLocalBox.current;
     const screenMesh = nodes[SCREEN_MESH_NAME] as THREE.Mesh | undefined;
     if (!overlay || !box || !screenMesh) return;
 
-    // Build 8 corners of the screen mesh's LOCAL bounding box,
-    // transform each by the mesh's world matrix, then project.
+    // Local -Z face of the screen mesh is the iPhone's screen surface.
+    // After the group's Y=π rotation it ends up facing +Z (toward camera).
+    // Use the 4 corners of THAT face only — projecting the back face too
+    // gives a wider bounding box that doesn't match the visible screen.
+    const frontZ = box.min.z;
     const cs = corners.current;
-    cs[0].set(box.min.x, box.min.y, box.min.z);
-    cs[1].set(box.max.x, box.min.y, box.min.z);
-    cs[2].set(box.min.x, box.max.y, box.min.z);
-    cs[3].set(box.max.x, box.max.y, box.min.z);
-    cs[4].set(box.min.x, box.min.y, box.max.z);
-    cs[5].set(box.max.x, box.min.y, box.max.z);
-    cs[6].set(box.min.x, box.max.y, box.max.z);
-    cs[7].set(box.max.x, box.max.y, box.max.z);
+    cs[0].set(box.min.x, box.min.y, frontZ);
+    cs[1].set(box.max.x, box.min.y, frontZ);
+    cs[2].set(box.min.x, box.max.y, frontZ);
+    cs[3].set(box.max.x, box.max.y, frontZ);
 
     let minPx = Infinity, minPy = Infinity, maxPx = -Infinity, maxPy = -Infinity;
     for (const c of cs) {
@@ -107,9 +122,6 @@ function FlatIPhone({ overlayRef }: { overlayRef: React.RefObject<HTMLDivElement
       if (py > maxPy) maxPy = py;
     }
 
-    // Overlay fills the full projected screen rect (no shrink — Jayme
-    // confirmed the screen fills nicely as-is). Inner content padding
-    // handles corner clearance.
     overlay.style.left = `${minPx}px`;
     overlay.style.top = `${minPy}px`;
     overlay.style.width = `${maxPx - minPx}px`;
