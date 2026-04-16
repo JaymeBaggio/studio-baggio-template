@@ -13,10 +13,25 @@ interface DockedPhone3DProps {
   onClick: () => void;
 }
 
+// Sized for a portrait container narrower than the demo's wide hero —
+// scale reduced 500→250 and camera pulled back so the phone reads as a phone,
+// not a black wall filling the viewport.
+const BASE_SCALE = 250;
+
 function IPhoneModel({ onClick }: { onClick: () => void }) {
   const group = useRef<THREE.Group>(null);
   const { scene } = useGLTF("/models/iphone.glb");
   const [hovered, setHovered] = useState(false);
+
+  // Debug once on mount: log the raw GLB bounding box so we know the
+  // model's native size and can sanity-check scale.
+  useState(() => {
+    const box = new THREE.Box3().setFromObject(scene);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    console.log("[iphone.glb] native size:", size.toArray());
+    return null;
+  });
 
   useFrame((state) => {
     if (!group.current) return;
@@ -26,14 +41,17 @@ function IPhoneModel({ onClick }: { onClick: () => void }) {
     group.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1 - 0.1;
     // Hover scale lerp — 1.0 → 1.1, smooth not snap
     const target = hovered ? 1.1 : 1;
-    group.current.scale.lerp(new THREE.Vector3(target * 500, target * 500, target * 500), 0.08);
+    group.current.scale.lerp(
+      new THREE.Vector3(target * BASE_SCALE, target * BASE_SCALE, target * BASE_SCALE),
+      0.08,
+    );
   });
 
   return (
     <Float speed={1.5} rotationIntensity={0.1} floatIntensity={0.3}>
       <group
         ref={group}
-        scale={500}
+        scale={BASE_SCALE}
         onPointerOver={(e) => {
           e.stopPropagation();
           setHovered(true);
@@ -58,7 +76,7 @@ function IPhoneModel({ onClick }: { onClick: () => void }) {
 export default function DockedPhone3D({ onClick }: DockedPhone3DProps) {
   return (
     <Canvas
-      camera={{ position: [0, 1, 3.5], fov: 45 }}
+      camera={{ position: [0, 1, 5], fov: 40 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true }}
       style={{ background: "transparent" }}
