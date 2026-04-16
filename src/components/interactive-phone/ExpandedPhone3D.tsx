@@ -35,6 +35,8 @@ function FlatIPhone({ overlayRef }: { overlayRef: React.RefObject<HTMLDivElement
 
   // Pre-compute the LOCAL bounding box of the screen mesh (doesn't change
   // with parent transform — getting it once is cheaper than every frame).
+  // ALSO hide the screen mesh so its baked wallpaper texture doesn't bleed
+  // through any rounded-corner gap of the HTML overlay above it.
   const screenLocalBox = useRef<THREE.Box3 | null>(null);
   useEffect(() => {
     const mesh = nodes[SCREEN_MESH_NAME] as THREE.Mesh | undefined;
@@ -44,6 +46,12 @@ function FlatIPhone({ overlayRef }: { overlayRef: React.RefObject<HTMLDivElement
     }
     mesh.geometry.computeBoundingBox();
     screenLocalBox.current = mesh.geometry.boundingBox?.clone() ?? null;
+    // Hide the screen mesh — the HTML overlay replaces it
+    mesh.visible = false;
+    return () => {
+      // Restore on unmount in case the GLB scene is reused
+      mesh.visible = true;
+    };
   }, [nodes]);
 
   useEffect(() => {
