@@ -45,30 +45,41 @@ function FlatIPhone() {
     <group ref={group}>
       <primitive object={scene} />
 
-      {/* HTML overlay sits in FRONT of the rotated screen face.
-          After Y=π rotation, the original screen face (local -Z) ends up
-          facing world +Z (toward camera). So we want Html positioned at
-          local -Z (which becomes world +Z post-rotation, in front of screen).
-          The Html itself ALSO needs counter-rotation Y=π so its readable
-          side faces the camera (otherwise it'd be mirrored). */}
+      {/* HTML overlay covers the FULL iPhone screen rect.
+          Math:
+          - Phone native screen rect ≈ 0.285w × 0.608h (92% × 95% of body)
+          - At group scale 3: world rect = 0.855 × 1.824
+          - Html scale 0.001 inside group scale 3 → 0.003 world per px
+          - 300 × 640 px overlay → 0.9 × 1.92 world (covers screen + tiny
+            overhang into bezel — ensures NO wallpaper bleeds through)
+
+          After Y=π group rotation, the screen face (native local -Z) ends
+          up facing world +Z (toward camera). Html positioned at local -Z
+          ends up in front of the screen. Html itself counter-rotates Y=π
+          so its content faces camera (otherwise mirrored).
+
+          Solid cream background ensures the GLB's baked wallpaper is
+          completely hidden behind the email content. */}
       <Html
         transform
-        position={[0, 0.005, -0.029]}
+        position={[0, 0.008, -0.030]}
         rotation={[0, Math.PI, 0]}
-        distanceFactor={0.4}
+        scale={0.001}
         occlude={false}
         style={{
-          width: "260px",
-          height: "565px",
-          background: "transparent",
+          width: "300px",
+          height: "640px",
+          background: "#F5F0EB",
           pointerEvents: "auto",
+          overflow: "hidden",
+          borderRadius: "42px",
         }}
       >
         <div
           className="w-full h-full overflow-y-auto"
           style={{
             WebkitOverflowScrolling: "touch",
-            borderRadius: "32px",
+            background: "#F5F0EB",
           }}
           onWheel={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}
