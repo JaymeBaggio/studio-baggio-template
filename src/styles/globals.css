@@ -43,9 +43,12 @@
   --font-sans: 'Satoshi', system-ui, sans-serif;
 }
 
+/* Universal box-sizing only. NEVER set margin/padding to 0 here —
+   it would override every Tailwind padding utility (Tailwind utilities
+   live in @layer, unlayered universal rules beat them regardless of
+   specificity). html and body get their own explicit margin/padding 0
+   reset below. */
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
