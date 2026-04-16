@@ -22,7 +22,6 @@ import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
 import PhoneTestSlide from "./components/slides/PhoneTestSlide";
 
 import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
-import Backdrop from "./components/interactive-phone/Backdrop";
 
 import { images, copy } from "./data/placeholders";
 
@@ -32,7 +31,6 @@ function App() {
       <SmoothScroll>
         <Navigation />
         <SlideIndicator />
-        <Backdrop />
         <HorizontalDeck>
         {/* 1. Cover */}
         <CoverSlide />

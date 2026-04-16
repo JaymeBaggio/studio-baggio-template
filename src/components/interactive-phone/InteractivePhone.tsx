@@ -1,21 +1,20 @@
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
-import { Flip } from "gsap/Flip";
 import { useInteractivePhone } from "./InteractivePhoneContext";
-import PhoneContent from "./PhoneContent";
 import DockedPhone3D from "./DockedPhone3D";
+import ExpandedPhone3D from "./ExpandedPhone3D";
 
-gsap.registerPlugin(Flip);
-
-// Pattern: TPL-25 (one-element-scroll-gsap-flip) — uses Flip.getState + Flip.from
-// to animate one element from a captured bounding rect to its new layout position.
-// We render TWO phones: docked (in slide DOM) and expanded (portal at body).
-// On expand: hide docked, mount expanded, Flip.from(dockedRect) to animate in.
-// On close: Flip.fit to dockedRect, then unmount expanded, show docked.
+// Architecture: TWO R3F Canvases — docked (in slide layout) and expanded
+// (portal at body). Both render the SAME iPhone GLB so the visual continuity
+// is preserved. On expand, docked fades out + expanded fades in. The expanded
+// Canvas hosts a drei <Html transform> overlay on the screen face for the
+// scrollable email content (no more DOM bezel-rectangle).
 //
-// Why two phones (not move one): the deck track has translateX, which makes
-// position:fixed children behave like position:absolute. Portal escapes that.
+// Why two Canvases (not one moving): the deck track has translateX, which
+// makes position:fixed children behave like position:absolute. Portal escapes
+// that — but a portal'd Canvas needs its own R3F context. Cheaper than
+// migrating the docked Canvas mid-flight.
 
 interface InteractivePhoneProps {
   className?: string;
@@ -23,75 +22,36 @@ interface InteractivePhoneProps {
 }
 
 export default function InteractivePhone({ className = "", style = {} }: InteractivePhoneProps) {
-  const { isExpanded, expand, close, sourceRect } = useInteractivePhone();
+  const { isExpanded, expand, close } = useInteractivePhone();
   const dockedRef = useRef<HTMLDivElement>(null);
-  const expandedRef = useRef<HTMLDivElement>(null);
-  const expandedPhoneRef = useRef<HTMLDivElement>(null);
+  const expandedWrapperRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Animate expanded phone in when it mounts
+  // Fade in expanded wrapper when it mounts
   useEffect(() => {
-    if (!isExpanded || !sourceRect) return;
-    const phone = expandedPhoneRef.current;
+    if (!isExpanded) return;
+    const wrap = expandedWrapperRef.current;
     const closeBtn = closeBtnRef.current;
-    if (!phone) return;
+    if (!wrap) return;
 
-    // Build a synthetic Flip state from the captured docked rect
-    // (Flip.from accepts targets directly; we use gsap.fromTo for precise control)
-    gsap.set(phone, {
-      position: "fixed",
-      top: sourceRect.top,
-      left: sourceRect.left,
-      width: sourceRect.width,
-      height: sourceRect.height,
-      rotateY: 12,
-      rotateX: 5,
-      transformOrigin: "center center",
-    });
-
-    const targetHeight = window.innerHeight * 0.78;
-    const targetWidth = (targetHeight * 9) / 19;
-    const targetTop = (window.innerHeight - targetHeight) / 2;
-    const targetLeft = (window.innerWidth - targetWidth) / 2;
-
-    const tl = gsap.timeline();
-    tl.to(phone, {
-      top: targetTop,
-      left: targetLeft,
-      width: targetWidth,
-      height: targetHeight,
-      rotateY: 0,
-      rotateX: 0,
-      duration: 0.7,
-      ease: "power3.out",
-    });
+    gsap.fromTo(wrap, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" });
 
     if (closeBtn) {
       gsap.set(closeBtn, { opacity: 0 });
-      tl.to(closeBtn, { opacity: 1, duration: 0.3, ease: "power2.out" }, 0.7);
+      gsap.to(closeBtn, { opacity: 1, duration: 0.3, ease: "power2.out", delay: 0.6 });
     }
+  }, [isExpanded]);
 
-    return () => {
-      tl.kill();
-    };
-  }, [isExpanded, sourceRect]);
-
-  // Animate close
   const handleClose = () => {
-    const phone = expandedPhoneRef.current;
-    if (!phone || !sourceRect) {
+    const wrap = expandedWrapperRef.current;
+    if (!wrap) {
       close();
       return;
     }
-    gsap.to(phone, {
-      top: sourceRect.top,
-      left: sourceRect.left,
-      width: sourceRect.width,
-      height: sourceRect.height,
-      rotateY: 12,
-      rotateX: 5,
-      duration: 0.5,
-      ease: "power2.inOut",
+    gsap.to(wrap, {
+      opacity: 0,
+      duration: 0.35,
+      ease: "power2.in",
       onComplete: () => close(),
     });
   };
@@ -109,33 +69,11 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
     window.addEventListener("keydown", onKey, { capture: true });
     return () => window.removeEventListener("keydown", onKey, { capture: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isExpanded, sourceRect]);
-
-  // Subtle 3D parallax tilt as user scrolls inside expanded phone
-  useEffect(() => {
-    if (!isExpanded) return;
-    const phone = expandedPhoneRef.current;
-    const scroller = phone?.querySelector("[data-phone-scroll-container]") as HTMLElement | null;
-    if (!phone || !scroller) return;
-    const onScroll = () => {
-      const max = scroller.scrollHeight - scroller.clientHeight;
-      if (max <= 0) return;
-      const progress = scroller.scrollTop / max; // 0 → 1
-      const tilt = (progress - 0.5) * 4; // -2 → +2 deg
-      gsap.to(phone, { rotateY: tilt, duration: 0.6, ease: "power1.out", overwrite: "auto" });
-    };
-    scroller.addEventListener("scroll", onScroll, { passive: true });
-    return () => scroller.removeEventListener("scroll", onScroll);
   }, [isExpanded]);
-
-  // Stop propagation on phone interactions (so deck doesn't see them while expanded)
-  const stopProp = (e: React.SyntheticEvent) => e.stopPropagation();
 
   return (
     <>
-      {/* DOCKED phone — real 3D iPhone via R3F (built per /3d-landing-pages skill).
-          The docked container is just the bounding box for the Canvas + the
-          source rect we measure for the FLIP expansion animation. */}
+      {/* DOCKED phone — real 3D iPhone via R3F (built per /3d-landing-pages skill) */}
       <div
         ref={dockedRef}
         className={`relative ${className}`}
@@ -143,7 +81,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
           width: "100%",
           height: "100%",
           opacity: isExpanded ? 0 : 1,
-          transition: "opacity 0.2s",
+          transition: "opacity 0.25s",
           ...style,
         }}
       >
@@ -154,7 +92,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
           }}
         />
 
-        {/* "Tap to explore" CTA — sits beneath the canvas, fades in via parent hover */}
+        {/* "Tap to explore" CTA — fades in via parent hover */}
         <div
           className="absolute left-1/2 -translate-x-1/2 -bottom-2 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
           style={{ whiteSpace: "nowrap" }}
@@ -165,62 +103,47 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
         </div>
       </div>
 
-      {/* EXPANDED phone — portal at body, only mounted when expanded */}
+      {/* EXPANDED phone — portal at body, R3F Canvas with the SAME iPhone GLB
+          plus an <Html transform> overlay on the screen face. */}
       {isExpanded &&
         createPortal(
           <div
-            ref={expandedRef}
+            ref={expandedWrapperRef}
             style={{
               position: "fixed",
               inset: 0,
-              zIndex: 200,
-              pointerEvents: "none",
-              perspective: "1400px",
+              zIndex: 150,
+              opacity: 0,
             }}
-            onClick={stopProp}
-            onWheel={stopProp}
-            onTouchStart={stopProp}
-            onTouchMove={stopProp}
           >
+            {/* Backdrop sits BEHIND the canvas — click to close */}
             <div
-              ref={expandedPhoneRef}
-              className="bg-[#1a1a1a] shadow-2xl overflow-hidden relative"
+              onClick={handleClose}
               style={{
-                transformStyle: "preserve-3d",
-                pointerEvents: "auto",
-                padding: "2.2%",
-                borderRadius: "8% / 4%",
+                position: "absolute",
+                inset: 0,
+                background: "rgba(0,0,0,0.6)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                zIndex: 0,
               }}
-            >
-              {/* Dynamic island / notch */}
-              <div
-                className="absolute left-1/2 -translate-x-1/2 bg-[#0A0A0A] rounded-full z-20"
-                style={{ top: "2.6%", width: "30%", height: "2.4%" }}
-              />
-              {/* Screen — proper bezel + radius */}
-              <div
-                className="w-full h-full overflow-hidden"
-                style={{ borderRadius: "6% / 3%" }}
-              >
-                <PhoneContent scrollable={true} />
-              </div>
-              {/* Home indicator bar */}
-              <div
-                className="absolute left-1/2 -translate-x-1/2 bg-white/40 rounded-full z-20 pointer-events-none"
-                style={{ bottom: "1%", width: "30%", height: "0.4%" }}
-              />
+            />
 
-              {/* Close button — sits outside the screen, on the bezel */}
-              <button
-                ref={closeBtnRef}
-                onClick={handleClose}
-                aria-label="Close phone"
-                className="absolute z-30 w-9 h-9 rounded-full bg-[#0A0A0A]/85 backdrop-blur text-white flex items-center justify-center hover:bg-[#D4A853] transition-colors"
-                style={{ top: "-1.6rem", right: "-1.6rem", fontSize: "18px" }}
-              >
-                ×
-              </button>
+            {/* The R3F expanded phone Canvas */}
+            <div style={{ position: "absolute", inset: 0, zIndex: 1 }}>
+              <ExpandedPhone3D onClose={handleClose} />
             </div>
+
+            {/* Close button — top-right */}
+            <button
+              ref={closeBtnRef}
+              onClick={handleClose}
+              aria-label="Close phone"
+              className="fixed top-6 right-6 z-[210] w-11 h-11 rounded-full bg-[#0A0A0A]/85 backdrop-blur text-white flex items-center justify-center hover:bg-[#D4A853] transition-colors"
+              style={{ fontSize: "20px", opacity: 0 }}
+            >
+              ×
+            </button>
           </div>,
           document.body,
         )}
