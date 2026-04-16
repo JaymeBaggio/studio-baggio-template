@@ -20,7 +20,6 @@ import TeamInfluenceSlide from "./components/slides/TeamInfluenceSlide";
 import SocialProofSlide from "./components/slides/SocialProofSlide";
 import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
 import ComparisonTableSlide from "./components/slides/ComparisonTableSlide";
-import PhoneTestSlide from "./components/slides/PhoneTestSlide";
 
 import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
 
@@ -235,8 +234,6 @@ function App() {
           subtitle="The same comparison, presented as a neutral matrix — pick whichever variant suits the deck."
         />
 
-        {/* 27. TEST: interactive phone (DUMMY — delete once moved into DeviceMockupSlide) */}
-        <PhoneTestSlide />
         </HorizontalDeck>
       </SmoothScroll>
     </InteractivePhoneProvider>

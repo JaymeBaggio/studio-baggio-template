@@ -1,6 +1,7 @@
 import Slide from "../Slide";
 import DualHeadline from "../shared/DualHeadline";
 import StatBlock from "../shared/StatBlock";
+import InteractivePhone from "../interactive-phone/InteractivePhone";
 
 export default function DeviceMockupSlide() {
   return (
@@ -50,50 +51,14 @@ export default function DeviceMockupSlide() {
             </div>
           </div>
 
-          {/* Phone — 3D tilt + scrolling content (no deck-animate — animated by custom GSAP handler) */}
+          {/* Real interactive 3D iPhone — click to expand, scroll inside.
+              R3F GLB model + drei OrbitControls + viewport-projected HTML
+              overlay (built per /3d-landing-pages skill). */}
           <div
-            data-device-phone-wrapper
             className="absolute z-20"
-            style={{ bottom: "8%", right: "20%", perspective: "800px", opacity: 0 }}
+            style={{ bottom: "5%", right: "8%", width: "min(280px, 24vw)", height: "min(440px, 60vh)" }}
           >
-            <div
-              data-device-phone
-              className="w-[18vw] max-w-[180px] aspect-[9/19] bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden p-1.5"
-              style={{ transform: "rotateY(12deg) rotateX(5deg)", transformStyle: "preserve-3d" }}
-            >
-              {/* Notch */}
-              <div className="absolute top-2 left-1/2 -translate-x-1/2 w-[40%] h-[3%] bg-[#1a1a1a] rounded-full z-10" />
-              {/* Screen with scrolling content */}
-              <div className="w-full h-full bg-white rounded-xl overflow-hidden relative">
-                <div data-phone-scroll className="absolute inset-0 w-full" style={{ height: "220%" }}>
-                  {/* App header */}
-                  <div className="px-2 pt-4 pb-2">
-                    <div className="w-[50%] h-1.5 bg-[#0A0A0A]/12 rounded mb-2" />
-                    <div className="w-[30%] h-1 bg-[#0A0A0A]/30 rounded" />
-                  </div>
-                  {/* Hero image */}
-                  <div className="mx-2 aspect-[4/3] bg-[#FAF6F0] rounded mb-2" />
-                  {/* Text lines */}
-                  <div className="px-2 flex flex-col gap-1">
-                    <div className="w-[80%] h-1.5 bg-[#0A0A0A]/10 rounded" />
-                    <div className="w-[65%] h-1 bg-[#0A0A0A]/6 rounded" />
-                    <div className="w-[90%] h-1 bg-[#0A0A0A]/6 rounded" />
-                  </div>
-                  {/* Second card */}
-                  <div className="mx-2 mt-3 aspect-[4/3] bg-[#FAF6F0] rounded" />
-                  <div className="px-2 mt-2 flex flex-col gap-1">
-                    <div className="w-[70%] h-1.5 bg-[#0A0A0A]/10 rounded" />
-                    <div className="w-[85%] h-1 bg-[#0A0A0A]/6 rounded" />
-                  </div>
-                  {/* Third card */}
-                  <div className="mx-2 mt-3 aspect-[4/3] bg-[#FAF6F0] rounded" />
-                  <div className="px-2 mt-2 flex flex-col gap-1">
-                    <div className="w-[60%] h-1.5 bg-[#0A0A0A]/10 rounded" />
-                    <div className="w-[75%] h-1 bg-[#0A0A0A]/6 rounded" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <InteractivePhone />
           </div>
         </div>
 

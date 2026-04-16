@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const SLIDE_COUNT = 27; // 24 production + 2 comparison-table variants + 1 dummy phone test
+const SLIDE_COUNT = 26; // 24 production + 2 comparison-table variants
 
 export default function SlideIndicator() {
   const [activeIndex, setActiveIndex] = useState(0);
