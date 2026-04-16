@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { Flip } from "gsap/Flip";
 import { useInteractivePhone } from "./InteractivePhoneContext";
 import PhoneContent from "./PhoneContent";
+import DockedPhone3D from "./DockedPhone3D";
 
 gsap.registerPlugin(Flip);
 
@@ -132,40 +133,28 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
 
   return (
     <>
-      {/* DOCKED phone — lives in slide layout */}
+      {/* DOCKED phone — real 3D iPhone via R3F (built per /3d-landing-pages skill).
+          The docked container is just the bounding box for the Canvas + the
+          source rect we measure for the FLIP expansion animation. */}
       <div
         ref={dockedRef}
-        className={`cursor-pointer group ${className}`}
+        className={`relative ${className}`}
         style={{
-          perspective: "800px",
           opacity: isExpanded ? 0 : 1,
           transition: "opacity 0.2s",
           ...style,
         }}
-        onClick={() => {
-          if (isExpanded) return;
-          expand(dockedRef.current);
-        }}
       >
-        <div
-          className="w-full h-full bg-[#1a1a1a] rounded-[18%/9%] shadow-2xl overflow-hidden p-[3%] relative transition-transform group-hover:scale-[1.02]"
-          style={{
-            transform: "rotateY(12deg) rotateX(5deg)",
-            transformStyle: "preserve-3d",
-            aspectRatio: "9/19",
+        <DockedPhone3D
+          onClick={() => {
+            if (isExpanded) return;
+            expand(dockedRef.current);
           }}
-        >
-          {/* Notch */}
-          <div className="absolute top-[2%] left-1/2 -translate-x-1/2 w-[40%] h-[3%] bg-[#1a1a1a] rounded-full z-10" />
-          {/* Screen */}
-          <div className="w-full h-full rounded-[14%/7%] overflow-hidden">
-            <PhoneContent scrollable={false} />
-          </div>
-        </div>
+        />
 
-        {/* "Tap to explore" CTA — hover only on desktop, always on touch */}
+        {/* "Tap to explore" CTA — sits beneath the canvas, fades in via parent hover */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 -bottom-7 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none touch:opacity-100"
+          className="absolute left-1/2 -translate-x-1/2 -bottom-2 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
           style={{ whiteSpace: "nowrap" }}
         >
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#D4A853] font-semibold">
@@ -193,30 +182,39 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
           >
             <div
               ref={expandedPhoneRef}
-              className="bg-[#1a1a1a] rounded-[6%/3%] shadow-2xl overflow-hidden relative"
+              className="bg-[#1a1a1a] shadow-2xl overflow-hidden relative"
               style={{
                 transformStyle: "preserve-3d",
                 pointerEvents: "auto",
-                padding: "0.6%",
+                padding: "2.2%",
+                borderRadius: "8% / 4%",
               }}
             >
-              {/* Notch */}
+              {/* Dynamic island / notch */}
               <div
-                className="absolute top-[1.5%] left-1/2 -translate-x-1/2 bg-[#1a1a1a] rounded-full z-10"
-                style={{ width: "32%", height: "1.6%" }}
+                className="absolute left-1/2 -translate-x-1/2 bg-[#0A0A0A] rounded-full z-20"
+                style={{ top: "2.6%", width: "30%", height: "2.4%" }}
               />
-              {/* Screen */}
-              <div className="w-full h-full rounded-[5%/2.5%] overflow-hidden">
+              {/* Screen — proper bezel + radius */}
+              <div
+                className="w-full h-full overflow-hidden"
+                style={{ borderRadius: "6% / 3%" }}
+              >
                 <PhoneContent scrollable={true} />
               </div>
+              {/* Home indicator bar */}
+              <div
+                className="absolute left-1/2 -translate-x-1/2 bg-white/40 rounded-full z-20 pointer-events-none"
+                style={{ bottom: "1%", width: "30%", height: "0.4%" }}
+              />
 
-              {/* Close button */}
+              {/* Close button — sits outside the screen, on the bezel */}
               <button
                 ref={closeBtnRef}
                 onClick={handleClose}
                 aria-label="Close phone"
-                className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-[#0A0A0A]/80 backdrop-blur text-white flex items-center justify-center hover:bg-[#D4A853] transition-colors"
-                style={{ fontSize: "16px" }}
+                className="absolute z-30 w-9 h-9 rounded-full bg-[#0A0A0A]/85 backdrop-blur text-white flex items-center justify-center hover:bg-[#D4A853] transition-colors"
+                style={{ top: "-1.6rem", right: "-1.6rem", fontSize: "18px" }}
               >
                 ×
               </button>

@@ -37,9 +37,10 @@ export default function PhoneTestSlide() {
           </div>
         </div>
 
-        {/* Right: the phone, centred in its column */}
+        {/* Right: the phone, centred in its column.
+            R3F canvas needs generous bounds so Float wobble + hover scale don't clip. */}
         <div className="col-span-6 flex items-center justify-center h-full relative">
-          <div className="deck-animate relative" style={{ width: "200px", height: "422px" }}>
+          <div className="deck-animate relative" style={{ width: "min(440px, 36vw)", height: "min(620px, 70vh)" }}>
             <InteractivePhone />
           </div>
         </div>

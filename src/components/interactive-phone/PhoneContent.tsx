@@ -33,6 +33,66 @@ const articles = [
     image: "https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=600&h=400&fit=crop&auto=format",
     excerpt: "A conversation about systems, sustainability, and the long game of expertise.",
   },
+  {
+    kicker: "ANALYSIS",
+    title: "The case for one piece of evergreen content per week",
+    image: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=400&fit=crop&auto=format",
+    excerpt: "What we learned from publishing the same way for six months in a row.",
+  },
+  {
+    kicker: "OPINION",
+    title: "Authority is downstream of generosity",
+    image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=400&fit=crop&auto=format",
+    excerpt: "Give the answer away. Build the trust. The work follows.",
+  },
+  {
+    kicker: "FIELD NOTES",
+    title: "What advisers told us about being visible",
+    image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&h=400&fit=crop&auto=format",
+    excerpt: "Forty conversations with senior practitioners. Five patterns. One conclusion.",
+  },
+  {
+    kicker: "PROFILE",
+    title: "The quietest founder we know, on going public",
+    image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=600&h=400&fit=crop&auto=format",
+    excerpt: "How an introvert built a personal brand without ever feeling self-conscious.",
+  },
+  {
+    kicker: "PLAYBOOK",
+    title: "Eight rules for writing in your own voice",
+    image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&h=400&fit=crop&auto=format",
+    excerpt: "The tone-of-voice document we share with every new client.",
+  },
+  {
+    kicker: "DEEP READ",
+    title: "Inside the patient work of building reputation",
+    image: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=600&h=400&fit=crop&auto=format",
+    excerpt: "Why the most enduring authority is the slowest to build.",
+  },
+  {
+    kicker: "REPORT",
+    title: "Annual review: the year in expert-led content",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&h=400&fit=crop&auto=format",
+    excerpt: "Numbers, names, and what worked across forty engagements.",
+  },
+  {
+    kicker: "DISPATCH",
+    title: "From the field — what's changed in the last quarter",
+    image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&h=400&fit=crop&auto=format",
+    excerpt: "Three shifts in how senior buyers research the people they hire.",
+  },
+  {
+    kicker: "REFLECTION",
+    title: "The first year of building in public",
+    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=400&fit=crop&auto=format",
+    excerpt: "What I would tell myself again, and what I would do differently.",
+  },
+  {
+    kicker: "CLOSING",
+    title: "The quiet edition — back to the work",
+    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=600&h=400&fit=crop&auto=format",
+    excerpt: "A short note on stepping away from the noise and back to the page.",
+  },
 ];
 
 interface PhoneContentProps {
