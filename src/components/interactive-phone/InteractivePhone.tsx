@@ -140,6 +140,8 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
         ref={dockedRef}
         className={`relative ${className}`}
         style={{
+          width: "100%",
+          height: "100%",
           opacity: isExpanded ? 0 : 1,
           transition: "opacity 0.2s",
           ...style,
