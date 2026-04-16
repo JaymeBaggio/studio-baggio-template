@@ -103,7 +103,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
   return (
     <div
       data-phone-scroll-container
-      className="w-full h-full bg-[#F5F0EB] overflow-hidden"
+      className="w-full h-full bg-[#FAF6F0] overflow-hidden"
       style={{
         overflowY: scrollable ? "auto" : "hidden",
         WebkitOverflowScrolling: "touch",
@@ -132,7 +132,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
           alt=""
           className="w-full aspect-[16/10] object-cover rounded mb-3"
         />
-        <div className="text-[8px] uppercase tracking-[0.2em] text-[#D4A853] font-semibold mb-2">
+        <div className="text-[8px] uppercase tracking-[0.2em] text-[#0A0A0A] font-semibold mb-2">
           {articles[0].kicker}
         </div>
         <h3 className="font-serif text-[#0A0A0A] text-[17px] leading-[1.2] mb-2">
@@ -145,9 +145,9 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
 
       {/* Section divider */}
       <div className="px-6 py-4 flex items-center gap-3">
-        <div className="flex-1 h-px bg-[#D4A853]/30" />
+        <div className="flex-1 h-px bg-[#0A0A0A]/30" />
         <span className="text-[8px] uppercase tracking-[0.2em] text-[#999690]">Today's stories</span>
-        <div className="flex-1 h-px bg-[#D4A853]/30" />
+        <div className="flex-1 h-px bg-[#0A0A0A]/30" />
       </div>
 
       {/* Article list */}
@@ -160,7 +160,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
               className="w-[80px] h-[80px] object-cover rounded flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <div className="text-[7px] uppercase tracking-[0.2em] text-[#D4A853] font-semibold mb-1">
+              <div className="text-[7px] uppercase tracking-[0.2em] text-[#0A0A0A] font-semibold mb-1">
                 {article.kicker}
               </div>
               <h4 className="font-serif text-[#0A0A0A] text-[13px] leading-[1.2] mb-1.5">
@@ -176,7 +176,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
 
       {/* Shoppable edit */}
       <div className="px-6 py-5 bg-[#0D0D0D] text-white">
-        <div className="text-[8px] uppercase tracking-[0.3em] text-[#D4A853] mb-2">Shoppable Edit</div>
+        <div className="text-[8px] uppercase tracking-[0.3em] text-[#0A0A0A] mb-2">Shoppable Edit</div>
         <div className="font-serif text-[18px] leading-[1.15] mb-4">This week's selection</div>
         <div className="grid grid-cols-2 gap-2">
           <div className="aspect-square bg-white/5 rounded flex items-end p-2">

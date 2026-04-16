@@ -65,7 +65,7 @@ export default function SocialProofSlide() {
 
       {/* Central quote */}
       <div className="relative z-30 w-full h-full flex flex-col items-center justify-center pointer-events-none">
-        <div className="bg-[#F5F0EB]/95 backdrop-blur-sm px-12 py-10 max-w-[520px] text-center">
+        <div className="bg-[#FAF6F0]/95 backdrop-blur-sm px-12 py-10 max-w-[520px] text-center">
           <h2 className="deck-animate dual-serif text-[#0A0A0A] text-3xl md:text-4xl uppercase leading-none">
             The Relationship
           </h2>

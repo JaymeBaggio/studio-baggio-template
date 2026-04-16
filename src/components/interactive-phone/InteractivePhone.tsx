@@ -101,7 +101,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
           className="absolute left-1/2 -translate-x-1/2 -bottom-2 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none"
           style={{ whiteSpace: "nowrap" }}
         >
-          <span className="text-[10px] uppercase tracking-[0.25em] text-[#D4A853] font-semibold">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-[#0A0A0A] font-semibold">
             Tap to explore
           </span>
         </div>
@@ -154,7 +154,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
                 top: 0,
                 width: 0,
                 height: 0,
-                background: "#F5F0EB",
+                background: "#FAF6F0",
                 overflow: "hidden",
                 borderRadius: "13% / 6%",
                 zIndex: 2,
@@ -166,7 +166,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
                 className="w-full h-full overflow-y-auto"
                 style={{
                   WebkitOverflowScrolling: "touch",
-                  background: "#F5F0EB",
+                  background: "#FAF6F0",
                   borderRadius: "13% / 6%",
                 }}
                 onWheel={(e) => e.stopPropagation()}
@@ -200,7 +200,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
               ref={closeBtnRef}
               onClick={handleClose}
               aria-label="Close phone"
-              className="fixed top-6 right-6 z-[210] w-11 h-11 rounded-full bg-[#0A0A0A]/85 backdrop-blur text-white flex items-center justify-center hover:bg-[#D4A853] transition-colors"
+              className="fixed top-6 right-6 z-[210] w-11 h-11 rounded-full bg-[#0A0A0A]/85 backdrop-blur text-white flex items-center justify-center hover:bg-[#0A0A0A] transition-colors"
               style={{ fontSize: "20px", opacity: 0 }}
             >
               ×

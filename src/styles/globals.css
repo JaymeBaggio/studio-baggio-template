@@ -30,16 +30,21 @@
 }
 
 @theme {
-  --color-cream: #F5F0EB;
+  /* Background lifted from #FAF6F0 to lighter paper-cream */
+  --color-cream: #FAF6F0;
   --color-dark: #0D0D0D;
-  --color-gold: #D4A853;
-  --color-gold-light: #E0C080;
+  /* Monochrome — gold accent dropped. Kept var name for compat; used only
+     in places that need a neutral subtle accent (faint dark rule etc). */
+  --color-accent: #0A0A0A;
+  --color-accent-soft: rgba(10, 10, 10, 0.18);
   --color-text: #0A0A0A;
   --color-white: #FFFFFF;
   --color-grey: #999690;
 
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-italic: 'Cormorant Garamond', Georgia, serif;
+  /* Fraunces variable serif — handles both display + italic accent.
+     Satoshi for sans body/UI. Drops Playfair + Cormorant. */
+  --font-serif: 'Fraunces', 'Times New Roman', serif;
+  --font-italic: 'Fraunces', 'Times New Roman', serif;
   --font-sans: 'Satoshi', system-ui, sans-serif;
 }
 
@@ -109,20 +114,28 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-top: 0.6em;
+  /* Was 0.6em — too tight against the .stat-number's line-height: 0.9
+     descenders (e.g. % symbol). Bumped to give clear separation. */
+  margin-top: 1em;
 }
 
+/* Fraunces variable settings tuned for the deck's editorial voice.
+   - SOFT axis at 50 for slightly humanist curves (vs harsh modern serif)
+   - Optical size 96-144 for big display moments */
 .dual-serif {
   font-family: var(--font-serif);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.05;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
+  letter-spacing: -0.01em;
 }
 
 .dual-italic {
   font-family: var(--font-italic);
   font-style: italic;
-  font-weight: 400;
+  font-weight: 350;
   line-height: 1.1;
+  font-variation-settings: "opsz" 144, "SOFT" 50;
 }
 
 /* Persistent header */

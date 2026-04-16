@@ -13,7 +13,7 @@ const sizeClasses = {
 const colorClasses = {
   dark: "text-[#0A0A0A]",
   light: "text-white",
-  gold: "text-[#D4A853]",
+  gold: "text-[#0A0A0A]",
 };
 
 export default function DualHeadline({ serif, italic, size = "lg", color = "dark" }: DualHeadlineProps) {

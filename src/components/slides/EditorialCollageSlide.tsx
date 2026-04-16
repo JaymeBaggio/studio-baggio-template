@@ -39,8 +39,8 @@ export default function EditorialCollageSlide() {
           <div className="flex gap-8 mt-10">
             {copy.about.awards.map((award, i) => (
               <div key={i} className="deck-animate flex flex-col items-center">
-                <div className="w-14 h-14 rounded-full border border-[#D4A853]/30 flex items-center justify-center mb-2">
-                  <span className="font-serif text-[#D4A853] text-lg font-bold">{award.charAt(0)}</span>
+                <div className="w-14 h-14 rounded-full border border-[#0A0A0A]/30 flex items-center justify-center mb-2">
+                  <span className="font-serif text-[#0A0A0A] text-lg font-bold">{award.charAt(0)}</span>
                 </div>
                 <span className="font-sans text-[10px] uppercase tracking-wider text-[#0A0A0A]/50 text-center max-w-[100px]">
                   {award}

@@ -26,7 +26,7 @@ export default function LogoWallSlide() {
             <span className="persistent-header text-[#999690]">Studio Baggio</span>
           </div>
 
-          <span className="deck-animate kicker text-[#D4A853] mb-4">OUR CLIENTS</span>
+          <span className="deck-animate kicker text-[#0A0A0A] mb-4">OUR CLIENTS</span>
           <DualHeadline serif="WE WORK WITH" italic="leading brands" size="lg" />
 
           <p className="deck-animate font-sans text-[16px] leading-[1.7] text-[#0A0A0A]/75 mt-6 max-w-[440px]">

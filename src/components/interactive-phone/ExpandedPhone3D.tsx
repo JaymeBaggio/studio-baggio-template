@@ -152,8 +152,8 @@ const ExpandedPhone3D = forwardRef<ExpandedPhone3DHandle, ExpandedPhone3DProps>(
         <ambientLight intensity={0.5} />
         <directionalLight position={[5, 5, 5]} intensity={1.4} color="#ffffff" />
         <spotLight position={[0, 8, 2]} angle={0.4} penumbra={0.8} intensity={2.5} color="#ffffff" />
-        <pointLight position={[-3, 2, 4]} color="#D4A853" intensity={1.4} distance={14} />
-        <pointLight position={[3, 0, -3]} color="#F5F0EB" intensity={1.0} distance={12} />
+        <pointLight position={[-3, 2, 4]} color="#FFE8C8" intensity={1.4} distance={14} />
+        <pointLight position={[3, 0, -3]} color="#FAF6F0" intensity={1.0} distance={12} />
 
         <FlatIPhone overlayRef={overlayRef} />
 

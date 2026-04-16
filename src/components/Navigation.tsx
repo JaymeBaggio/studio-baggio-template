@@ -44,7 +44,7 @@ export default function Navigation() {
       </button>
       <button
         onClick={() => window.print()}
-        className="font-sans text-[11px] font-medium tracking-wider uppercase text-white/70 hover:text-white transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-[#D4A853]"
+        className="font-sans text-[11px] font-medium tracking-wider uppercase text-white/70 hover:text-white transition-colors focus:outline-none focus-visible:ring-1 focus-visible:ring-[#0A0A0A]"
       >
         Download PDF
       </button>

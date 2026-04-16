@@ -6,7 +6,7 @@ export default function StatWallSlide() {
   return (
     <Slide bg="dark" id="stat-wall" anim="stat-counter">
       <div className="w-full flex flex-col items-center justify-center">
-        <span className="deck-animate kicker text-[#D4A853] mb-3">THE NUMBERS</span>
+        <span className="deck-animate kicker text-[#0A0A0A] mb-3">THE NUMBERS</span>
         <h2 className="deck-animate dual-italic text-white/90 text-3xl md:text-4xl mb-14">
           Results that speak
         </h2>

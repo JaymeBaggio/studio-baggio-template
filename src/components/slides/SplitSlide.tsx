@@ -46,7 +46,7 @@ export default function SplitSlide({ id, direction, image, kicker, headline, ita
             <span className="persistent-header text-[#999690]">Studio Baggio</span>
           </div>
 
-          <span className="deck-animate kicker text-[#D4A853] mb-4">{kicker}</span>
+          <span className="deck-animate kicker text-[#0A0A0A] mb-4">{kicker}</span>
           <DualHeadline serif={headline} italic={italic} />
 
           <p className="deck-animate font-sans text-[16px] leading-[1.7] text-[#0A0A0A]/75 mt-7 max-w-[440px]">
@@ -57,7 +57,7 @@ export default function SplitSlide({ id, direction, image, kicker, headline, ita
             <ul className="mt-6 space-y-2 max-w-[440px]">
               {bullets.map((b, i) => (
                 <li key={i} className="deck-animate flex items-start gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#D4A853] mt-2 flex-shrink-0" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0A0A0A] mt-2 flex-shrink-0" />
                   <span className="font-sans text-[15px] leading-[1.6] text-[#0A0A0A]/70">{b}</span>
                 </li>
               ))}
@@ -72,7 +72,7 @@ export default function SplitSlide({ id, direction, image, kicker, headline, ita
 
           {/* Bottom anchor — thin gold rule */}
           <div className="deck-animate absolute bottom-[clamp(70px,8vh,90px)] left-0">
-            <div className="w-16 h-px bg-[#D4A853]/30" />
+            <div className="w-16 h-px bg-[#0A0A0A]/30" />
           </div>
         </div>
       </div>

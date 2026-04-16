@@ -1,7 +1,7 @@
 type BgMode = "cream" | "dark" | "photo";
 
 const bgStyles: Record<BgMode, { bg: string; color: string }> = {
-  cream: { bg: "#F5F0EB", color: "#0A0A0A" },
+  cream: { bg: "#FAF6F0", color: "#0A0A0A" },
   dark: { bg: "#0D0D0D", color: "#FFFFFF" },
   photo: { bg: "transparent", color: "#FFFFFF" },
 };

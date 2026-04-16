@@ -53,7 +53,7 @@ export default function PlatformReachSlide() {
               <div className="w-2 h-2 rounded-full bg-[#ccc]" />
               <div className="w-2 h-2 rounded-full bg-[#ccc]" />
             </div>
-            <div className="w-full h-[92%] bg-[#F5F0EB] p-4 flex flex-col">
+            <div className="w-full h-[92%] bg-[#FAF6F0] p-4 flex flex-col">
               <div className="w-[40%] h-2 bg-[#0A0A0A]/10 rounded mb-3" />
               <div className="flex gap-3 flex-1">
                 <div className="w-[55%] flex flex-col gap-2">
@@ -76,7 +76,7 @@ export default function PlatformReachSlide() {
             className="deck-animate absolute w-[38%] aspect-[3/4] bg-white rounded-xl shadow-2xl overflow-hidden z-10"
             style={{ top: "28%", right: "2%", transform: "rotate(2deg)" }}
           >
-            <div className="w-full h-full bg-[#F5F0EB] p-3 flex flex-col gap-2">
+            <div className="w-full h-full bg-[#FAF6F0] p-3 flex flex-col gap-2">
               <div className="w-full aspect-[4/3] bg-[#0A0A0A]/8 rounded" />
               <div className="w-[70%] h-2 bg-[#0A0A0A]/10 rounded mt-1" />
               <div className="w-[90%] h-1.5 bg-[#0A0A0A]/6 rounded" />
@@ -90,7 +90,7 @@ export default function PlatformReachSlide() {
             className="deck-animate absolute w-[17%] aspect-[9/19] bg-white rounded-2xl shadow-2xl overflow-hidden z-20"
             style={{ bottom: "8%", right: "18%", transform: "rotate(-3deg)" }}
           >
-            <div className="w-full h-full bg-[#F5F0EB] p-2 flex flex-col gap-1.5">
+            <div className="w-full h-full bg-[#FAF6F0] p-2 flex flex-col gap-1.5">
               <div className="w-full aspect-[9/6] bg-[#0A0A0A]/8 rounded" />
               <div className="w-[60%] h-1.5 bg-[#0A0A0A]/10 rounded" />
               <div className="w-[85%] h-1 bg-[#0A0A0A]/5 rounded" />
@@ -105,8 +105,8 @@ export default function PlatformReachSlide() {
           <div className="deck-animate flex flex-col gap-6">
             {channels.map((ch, i) => (
               <div key={i} className="flex items-center gap-4">
-                <div className="w-11 h-11 rounded-full border border-[#D4A853]/30 flex items-center justify-center flex-shrink-0">
-                  <span className="font-serif text-[#D4A853] text-base font-bold">{ch.initial}</span>
+                <div className="w-11 h-11 rounded-full border border-[#0A0A0A]/30 flex items-center justify-center flex-shrink-0">
+                  <span className="font-serif text-[#0A0A0A] text-base font-bold">{ch.initial}</span>
                 </div>
                 <div>
                   <span className="font-serif text-[#0A0A0A] text-2xl leading-none">{ch.stat}</span>

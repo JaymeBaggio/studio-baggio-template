@@ -43,7 +43,7 @@ export default function BrandGridSlide() {
         </div>
 
         {/* Cream band — bottom 32% */}
-        <div className="flex items-center justify-center px-[8vw]" style={{ height: "32%", backgroundColor: "#F5F0EB" }}>
+        <div className="flex items-center justify-center px-[8vw]" style={{ height: "32%", backgroundColor: "#FAF6F0" }}>
           <div className="text-center max-w-[700px]">
             <p className="deck-animate font-sans text-[15px] leading-[1.7] text-[#0A0A0A]/75">
               Our reach extends through targeted verticals — from editorial and luxury to wellness, business, and culture. Each channel serves a distinct audience with tailored content and premium partnerships.

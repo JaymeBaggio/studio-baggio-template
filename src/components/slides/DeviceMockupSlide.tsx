@@ -18,7 +18,7 @@ export default function DeviceMockupSlide() {
               <div className="w-2 h-2 rounded-full bg-[#ccc]" />
               <div className="w-2 h-2 rounded-full bg-[#ccc]" />
             </div>
-            <div className="w-full h-[92%] bg-[#F5F0EB] p-4 flex flex-col">
+            <div className="w-full h-[92%] bg-[#FAF6F0] p-4 flex flex-col">
               <div className="w-[40%] h-2 bg-[#0A0A0A]/10 rounded mb-3" />
               <div className="flex gap-3 flex-1">
                 <div className="w-[55%] flex flex-col gap-2">
@@ -41,7 +41,7 @@ export default function DeviceMockupSlide() {
             className="deck-animate absolute w-[35%] aspect-[3/4] bg-white rounded-xl shadow-2xl overflow-hidden z-10"
             style={{ top: "20%", right: "8%", transform: "rotate(3deg)" }}
           >
-            <div className="w-full h-full bg-[#F5F0EB] p-3 flex flex-col gap-2">
+            <div className="w-full h-full bg-[#FAF6F0] p-3 flex flex-col gap-2">
               <div className="w-full aspect-[4/3] bg-[#0A0A0A]/8 rounded" />
               <div className="w-[70%] h-2 bg-[#0A0A0A]/10 rounded mt-1" />
               <div className="w-[90%] h-1.5 bg-[#0A0A0A]/6 rounded" />
@@ -69,10 +69,10 @@ export default function DeviceMockupSlide() {
                   {/* App header */}
                   <div className="px-2 pt-4 pb-2">
                     <div className="w-[50%] h-1.5 bg-[#0A0A0A]/12 rounded mb-2" />
-                    <div className="w-[30%] h-1 bg-[#D4A853]/30 rounded" />
+                    <div className="w-[30%] h-1 bg-[#0A0A0A]/30 rounded" />
                   </div>
                   {/* Hero image */}
-                  <div className="mx-2 aspect-[4/3] bg-[#F5F0EB] rounded mb-2" />
+                  <div className="mx-2 aspect-[4/3] bg-[#FAF6F0] rounded mb-2" />
                   {/* Text lines */}
                   <div className="px-2 flex flex-col gap-1">
                     <div className="w-[80%] h-1.5 bg-[#0A0A0A]/10 rounded" />
@@ -80,13 +80,13 @@ export default function DeviceMockupSlide() {
                     <div className="w-[90%] h-1 bg-[#0A0A0A]/6 rounded" />
                   </div>
                   {/* Second card */}
-                  <div className="mx-2 mt-3 aspect-[4/3] bg-[#F5F0EB] rounded" />
+                  <div className="mx-2 mt-3 aspect-[4/3] bg-[#FAF6F0] rounded" />
                   <div className="px-2 mt-2 flex flex-col gap-1">
                     <div className="w-[70%] h-1.5 bg-[#0A0A0A]/10 rounded" />
                     <div className="w-[85%] h-1 bg-[#0A0A0A]/6 rounded" />
                   </div>
                   {/* Third card */}
-                  <div className="mx-2 mt-3 aspect-[4/3] bg-[#F5F0EB] rounded" />
+                  <div className="mx-2 mt-3 aspect-[4/3] bg-[#FAF6F0] rounded" />
                   <div className="px-2 mt-2 flex flex-col gap-1">
                     <div className="w-[60%] h-1.5 bg-[#0A0A0A]/10 rounded" />
                     <div className="w-[75%] h-1 bg-[#0A0A0A]/6 rounded" />
@@ -103,22 +103,22 @@ export default function DeviceMockupSlide() {
             <span className="persistent-header text-[#999690]">Brand Opportunities</span>
             <span className="persistent-header text-[#999690]">Studio Baggio</span>
           </div>
-          <span className="deck-animate kicker text-[#D4A853] mb-3">PLATFORM</span>
+          <span className="deck-animate kicker text-[#0A0A0A] mb-3">PLATFORM</span>
           <DualHeadline serif="DIGITAL" italic="presence" />
           <p className="deck-animate font-sans text-[16px] leading-[1.7] text-[#0A0A0A]/75 mt-6 max-w-[400px]">
             A premium editorial environment designed for impact. Every touchpoint crafted to build authority and drive engagement across devices.
           </p>
           <ul className="mt-5 space-y-2 max-w-[400px]">
             <li className="deck-animate flex items-start gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D4A853] mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0A0A0A] mt-2 flex-shrink-0" />
               <span className="font-sans text-[15px] leading-[1.6] text-[#0A0A0A]/70">Responsive editorial layouts built for every screen</span>
             </li>
             <li className="deck-animate flex items-start gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D4A853] mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0A0A0A] mt-2 flex-shrink-0" />
               <span className="font-sans text-[15px] leading-[1.6] text-[#0A0A0A]/70">SOLUS email campaigns with premium design standards</span>
             </li>
             <li className="deck-animate flex items-start gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#D4A853] mt-2 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0A0A0A] mt-2 flex-shrink-0" />
               <span className="font-sans text-[15px] leading-[1.6] text-[#0A0A0A]/70">Native mobile experience with platform-optimised content</span>
             </li>
           </ul>

@@ -8,7 +8,7 @@ interface StatBlockProps {
 }
 
 const colorMap = {
-  gold: "text-[#D4A853]",
+  gold: "text-[#0A0A0A]",
   white: "text-white",
   dark: "text-[#0A0A0A]",
 };

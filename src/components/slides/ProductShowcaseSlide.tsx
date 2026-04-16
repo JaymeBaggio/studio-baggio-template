@@ -48,7 +48,7 @@ export default function ProductShowcaseSlide() {
                 {/* Email content */}
                 <div className="flex-1 p-4 flex flex-col gap-3">
                   {/* Hero image */}
-                  <div className="w-full aspect-[16/9] bg-[#F5F0EB] rounded overflow-hidden">
+                  <div className="w-full aspect-[16/9] bg-[#FAF6F0] rounded overflow-hidden">
                     <img
                       src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=450&fit=crop&auto=format"
                       alt=""
@@ -56,15 +56,15 @@ export default function ProductShowcaseSlide() {
                     />
                   </div>
                   <div className="text-center">
-                    <div className="w-[20%] h-1 bg-[#D4A853]/40 rounded mx-auto mb-2" />
+                    <div className="w-[20%] h-1 bg-[#0A0A0A]/40 rounded mx-auto mb-2" />
                     <div className="w-[70%] h-2.5 bg-[#0A0A0A]/12 rounded mx-auto mb-1.5" />
                     <div className="w-[85%] h-1.5 bg-[#0A0A0A]/6 rounded mx-auto mb-1" />
                     <div className="w-[60%] h-1.5 bg-[#0A0A0A]/6 rounded mx-auto" />
                   </div>
                   {/* Product grid */}
                   <div className="grid grid-cols-2 gap-2 mt-2">
-                    <div className="aspect-square bg-[#F5F0EB] rounded" />
-                    <div className="aspect-square bg-[#F5F0EB] rounded" />
+                    <div className="aspect-square bg-[#FAF6F0] rounded" />
+                    <div className="aspect-square bg-[#FAF6F0] rounded" />
                   </div>
                 </div>
               </div>
@@ -86,10 +86,10 @@ export default function ProductShowcaseSlide() {
               <div className="w-full h-full bg-white rounded-lg overflow-hidden p-2 flex flex-col gap-1.5">
                 <div className="w-[50%] h-1.5 bg-[#0A0A0A]/10 rounded" />
                 <div className="grid grid-cols-2 gap-1.5 flex-1">
-                  <div className="bg-[#F5F0EB] rounded" />
-                  <div className="bg-[#F5F0EB] rounded" />
-                  <div className="bg-[#F5F0EB] rounded" />
-                  <div className="bg-[#F5F0EB] rounded" />
+                  <div className="bg-[#FAF6F0] rounded" />
+                  <div className="bg-[#FAF6F0] rounded" />
+                  <div className="bg-[#FAF6F0] rounded" />
+                  <div className="bg-[#FAF6F0] rounded" />
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function ProductShowcaseSlide() {
               className="deck-animate w-[40%] aspect-[9/19] bg-[#1a1a1a] rounded-2xl shadow-xl overflow-hidden p-1.5"
             >
               <div className="w-full h-full bg-white rounded-xl overflow-hidden p-1.5 flex flex-col gap-1">
-                <div className="w-full aspect-[9/6] bg-[#F5F0EB] rounded" />
+                <div className="w-full aspect-[9/6] bg-[#FAF6F0] rounded" />
                 <div className="w-[60%] h-1 bg-[#0A0A0A]/8 rounded" />
                 <div className="w-[80%] h-0.5 bg-[#0A0A0A]/5 rounded" />
                 <div className="w-[70%] h-0.5 bg-[#0A0A0A]/5 rounded" />

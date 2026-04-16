@@ -32,8 +32,8 @@ export default function SlideIndicator() {
           style={{
             width: i === activeIndex ? 8 : 5,
             height: i === activeIndex ? 8 : 5,
-            backgroundColor: i === activeIndex ? "#D4A853" : "rgba(255,255,255,0.3)",
-            boxShadow: i === activeIndex ? "0 0 10px rgba(212,168,83,0.5)" : "none",
+            backgroundColor: i === activeIndex ? "#0A0A0A" : "rgba(255,255,255,0.3)",
+            boxShadow: i === activeIndex ? "0 0 0 3px rgba(10,10,10,0.12)" : "none",
           }}
         />
       ))}
