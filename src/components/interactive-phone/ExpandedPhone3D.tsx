@@ -58,7 +58,8 @@ function FlatIPhone() {
   // - Choosing 320 px wide content: local_scale = 0.948 / 960 = 0.000988 ≈ 0.001
   const HTML_PX_WIDTH = 320;
   const HTML_PX_HEIGHT = Math.round(HTML_PX_WIDTH * (PHONE_NATIVE_H * SCREEN_FRAC_H) / (PHONE_NATIVE_W * SCREEN_FRAC_W));
-  const HTML_LOCAL_SCALE = 0.001;
+  // Empirically: scale 0.001 gave tiny dot, no scale gave huge. Trying 0.003.
+  const HTML_LOCAL_SCALE = 0.003;
 
   return (
     <group ref={group}>
