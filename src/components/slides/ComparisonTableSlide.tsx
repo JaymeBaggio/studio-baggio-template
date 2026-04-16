@@ -119,29 +119,30 @@ export default function ComparisonTableSlide({
   return (
     <Slide bg="cream" id={id} anim="stagger" align="top">
       <div className="w-full h-full grid grid-cols-12 gap-6 items-start">
-        {/* Header: kicker + title + subtitle on the left, takes full width on top */}
-        <div className="col-span-12 mb-2">
-          <div className="deck-animate flex items-baseline justify-between gap-6 mb-3">
+        {/* Header — compact so the table below has breathing room above the
+             slide-indicator dots. Title smaller, vertical spacing tightened. */}
+        <div className="col-span-12 mb-1">
+          <div className="deck-animate flex items-baseline justify-between gap-6 mb-2">
             <span className="kicker text-[#0A0A0A]/60">{kicker}</span>
             <span className="font-sans text-[10px] tracking-[0.25em] uppercase text-[#0A0A0A]/40">
               {variant === "highlighted" ? "Comparison · Highlighted" : "Comparison · Matrix"}
             </span>
           </div>
           <h2
-            className="deck-animate dual-serif text-[#0A0A0A] uppercase leading-[0.95] mb-3"
-            style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}
+            className="deck-animate dual-serif text-[#0A0A0A] uppercase leading-[0.95] mb-2"
+            style={{ fontSize: "clamp(2rem, 3.6vw, 3.4rem)" }}
           >
             {title}
           </h2>
           {subtitle && (
-            <p className="deck-animate dual-italic text-[#0A0A0A]/65 text-xl md:text-2xl max-w-[760px]">
+            <p className="deck-animate dual-italic text-[#0A0A0A]/65 text-lg md:text-xl max-w-[760px]">
               {subtitle}
             </p>
           )}
         </div>
 
         {/* Table proper, full width */}
-        <div className="col-span-12 mt-6">
+        <div className="col-span-12 mt-2">
           <div
             className="grid"
             style={{
@@ -152,7 +153,7 @@ export default function ComparisonTableSlide({
             <div className="deck-animate" />
             {brands.map((brand, bi) => {
               const isFirst = bi === 0;
-              const cellClasses = `flex items-center justify-center py-5 px-3 ${
+              const cellClasses = `flex items-center justify-center py-4 px-3 ${
                 isHighlighted && isFirst ? "bg-white/70 border-t border-[#0A0A0A] rounded-t-lg" : ""
               }`;
               return (
@@ -179,7 +180,7 @@ export default function ComparisonTableSlide({
                 <div key={ri} className="contents">
                   {/* Row label (left col) */}
                   <div
-                    className={`deck-animate flex items-center font-sans text-[14px] text-[#0A0A0A]/85 py-4 pr-4 border-t border-[#0A0A0A]/10 ${
+                    className={`deck-animate flex items-center font-sans text-[14px] text-[#0A0A0A]/85 py-3 pr-4 border-t border-[#0A0A0A]/10 ${
                       isLast ? "border-b border-[#0A0A0A]/10" : ""
                     }`}
                   >
@@ -196,7 +197,7 @@ export default function ComparisonTableSlide({
                     return (
                       <div
                         key={brand.name}
-                        className={`deck-animate flex items-center justify-center py-4 px-3 border-t border-[#0A0A0A]/10 ${
+                        className={`deck-animate flex items-center justify-center py-3 px-3 border-t border-[#0A0A0A]/10 ${
                           isLast && isHighlighted && isFirst ? "rounded-b-lg" : ""
                         } ${isLast ? "border-b border-[#0A0A0A]/10" : ""} ${cellHighlight} ${matrixHighlight}`}
                       >

@@ -200,9 +200,16 @@ function playSlideContent(slide: HTMLElement) {
   } else if (animType === "mosaic") {
     items.forEach((item, i) => {
       if ((item as HTMLElement).hasAttribute("data-overlay-band")) {
-        gsap.fromTo(item, { clipPath: "inset(0 50% 0 50%)" }, { clipPath: "inset(0 0% 0 0%)", duration: 0.8, delay: items.length * 0.04, ease: "power2.out", overwrite: true });
+        // Horizontal wipe-in from centre + opacity unhide. The global init
+        // sets all .deck-animate to opacity:0; mosaic branch must explicitly
+        // set opacity:1 or the band stays invisible.
+        gsap.fromTo(
+          item,
+          { clipPath: "inset(0 50% 0 50%)", opacity: 1, y: 0 },
+          { clipPath: "inset(0 0% 0 0%)", opacity: 1, y: 0, duration: 0.9, delay: items.length * 0.04, ease: "power3.out", overwrite: true },
+        );
       } else {
-        gsap.fromTo(item, { opacity: 0.15, scale: 1.06 }, { opacity: 1, scale: 1, duration: 0.6, delay: i * 0.05, ease: "power1.out", overwrite: true });
+        gsap.fromTo(item, { opacity: 0.15, scale: 1.06, y: 0 }, { opacity: 1, scale: 1, y: 0, duration: 0.6, delay: i * 0.05, ease: "power1.out", overwrite: true });
       }
     });
   } else if (animType === "logo-wave") {

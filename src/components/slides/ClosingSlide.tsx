@@ -32,8 +32,8 @@ export default function ClosingSlide() {
           WebkitBackdropFilter: "blur(8px)",
         }}
       >
-        <h2 className="wordmark text-white text-[clamp(1.5rem,3vw,2.5rem)] tracking-[0.35em] mb-4">
-          Thank You
+        <h2 className="dual-serif text-white text-[clamp(2.5rem,5vw,4.5rem)] tracking-[0.04em] mb-3">
+          Jayme Baggio
         </h2>
         <span className="wordmark text-white/50 text-[10px] tracking-[0.4em]">
           Studio Baggio
