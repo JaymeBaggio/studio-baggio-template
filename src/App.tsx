@@ -19,6 +19,7 @@ import BrandGridSlide from "./components/slides/BrandGridSlide";
 import TeamInfluenceSlide from "./components/slides/TeamInfluenceSlide";
 import SocialProofSlide from "./components/slides/SocialProofSlide";
 import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
+import ComparisonTableSlide from "./components/slides/ComparisonTableSlide";
 import PhoneTestSlide from "./components/slides/PhoneTestSlide";
 
 import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
@@ -214,7 +215,27 @@ function App() {
         {/* 24. Closing */}
         <ClosingSlide />
 
-        {/* 25. TEST: interactive phone (DUMMY — delete once moved into DeviceMockupSlide) */}
+        {/* 25. Comparison table — VARIANT A: highlighted column (Studio Baggio
+             column has paper-card bg + thin top rule, others ghost) */}
+        <ComparisonTableSlide
+          id="comparison-highlighted"
+          variant="highlighted"
+          kicker="HOW WE COMPARE"
+          title="Capability matrix"
+          subtitle="Where we're stronger, where we're not, and where it shows in the work."
+        />
+
+        {/* 26. Comparison table — VARIANT B: editorial matrix (all columns
+             equal weight, type-weight emphasis only on Studio Baggio col) */}
+        <ComparisonTableSlide
+          id="comparison-matrix"
+          variant="matrix"
+          kicker="HOW WE COMPARE"
+          title="Capability matrix"
+          subtitle="The same comparison, presented as a neutral matrix — pick whichever variant suits the deck."
+        />
+
+        {/* 27. TEST: interactive phone (DUMMY — delete once moved into DeviceMockupSlide) */}
         <PhoneTestSlide />
         </HorizontalDeck>
       </SmoothScroll>
