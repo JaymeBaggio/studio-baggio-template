@@ -49,16 +49,16 @@ function FlatIPhone() {
     group.current.scale.lerp(new THREE.Vector3(BASE_SCALE, BASE_SCALE, BASE_SCALE), 0.07);
   });
 
-  // Html sized to match the screen mesh. Native screen rect = 0.317 × 0.702.
-  // Drei Html in transform mode + distanceFactor renders pixels at world units
-  // scaled by distance. For a 0.317-wide rect at scale ~3, we want CSS dims
-  // that produce that visual size. We use a content density of ~900 px wide
-  // (gives crisp text) with distanceFactor tuned so the result fits the screen.
-  const HTML_PX_WIDTH = 900;
+  // Html sized to match the screen mesh.
+  // Math (verified by experiment, not theory):
+  // - Phone at group scale 3 → world body width = 0.336 * 3 = 1.008
+  // - Want Html world width = 0.94 * 1.008 = 0.948 (matches screen rect)
+  // - Inside the rotated group with scale 3, Html effective world scale =
+  //   3 * htmlLocalScale. So local_scale = 0.948 / (HTML_PX_WIDTH * 3)
+  // - Choosing 320 px wide content: local_scale = 0.948 / 960 = 0.000988 ≈ 0.001
+  const HTML_PX_WIDTH = 320;
   const HTML_PX_HEIGHT = Math.round(HTML_PX_WIDTH * (PHONE_NATIVE_H * SCREEN_FRAC_H) / (PHONE_NATIVE_W * SCREEN_FRAC_W));
-  // distanceFactor: at distance ~12 (camera 4 + phone front offset; with group
-  // scale 3 effective distance is different), tuned empirically. Will iterate.
-  const HTML_DISTANCE_FACTOR = 1.5;
+  const HTML_LOCAL_SCALE = 0.001;
 
   return (
     <group ref={group}>
@@ -66,7 +66,7 @@ function FlatIPhone() {
 
       {/* Email content overlay attached INSIDE the rotating group so it
           follows the model's lerp automatically. Position in LOCAL coords:
-          - Native screen face is at z = -PHONE_NATIVE_D/2 + small inset
+          - Native screen face is at z ≈ -PHONE_NATIVE_D/2 (model's -Z front)
           - Place Html slightly in front (more negative z)
           - Counter-rotate Y=π so content reads correctly through the group's
             π rotation (otherwise mirrored). */}
@@ -75,7 +75,7 @@ function FlatIPhone() {
         occlude={false}
         position={[0, 0, -(PHONE_NATIVE_D / 2) - 0.001]}
         rotation={[0, Math.PI, 0]}
-        distanceFactor={HTML_DISTANCE_FACTOR}
+        scale={HTML_LOCAL_SCALE}
         style={{
           width: `${HTML_PX_WIDTH}px`,
           height: `${HTML_PX_HEIGHT}px`,
