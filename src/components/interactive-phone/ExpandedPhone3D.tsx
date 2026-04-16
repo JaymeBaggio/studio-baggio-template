@@ -1,38 +1,50 @@
-import { Suspense, useRef, useEffect } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Html, ContactShadows, Environment } from "@react-three/drei";
+import { Suspense, useRef, useEffect, useImperativeHandle, forwardRef } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useGLTF, ContactShadows, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
-import PhoneContent from "./PhoneContent";
 
-// Same iPhone GLB as DockedPhone3D — visual continuity preserved.
-// Pose: flat-on facing camera (rotated 180° on Y so screen faces camera).
+// Architecture: project the iPhone screen mesh's world bounding-box corners
+// to viewport pixels every frame, then update the HTML overlay's style
+// directly via ref. No drei <Html transform> magic numbers, no vh guessing.
 //
-// Architecture: HTML email content rendered via drei <Html transform> attached
-// inside the rotating model group, sized to match the GLB's actual screen mesh
-// dimensions (lune.dev PCModel pattern). Inheriting the model's transform means
-// no viewport-space alignment math, no vh guessing — the overlay scales/moves
-// with the phone automatically through the lerp animation.
+// The overlay sits OUTSIDE the canvas (in the parent portal) and is
+// positioned/sized purely from the projected screen rect. As the model
+// lerps/rotates, the overlay tracks it precisely.
 //
 // Built per /3d-landing-pages skill (Technique 8: Loaded GLB Model).
 
-interface ExpandedPhone3DProps {
-  onClose: () => void;
+export interface ExpandedPhone3DHandle {
+  // No public methods — overlay positioning is done via ref forwarded down
 }
 
-// Native model is 0.336 × 0.718 × 0.075 (measured via Box3 from GLB).
-// Screen mesh xXDHkMplTIDAXLN is 0.317 × 0.702 = 94% × 97% of body — matches
-// what a real iPhone screen looks like (almost edge-to-edge with bezel).
-const BASE_SCALE = 3;
-const PHONE_NATIVE_W = 0.336;
-const PHONE_NATIVE_H = 0.718;
-const PHONE_NATIVE_D = 0.075;
-const SCREEN_FRAC_W = 0.94;
-const SCREEN_FRAC_H = 0.97;
+interface ExpandedPhone3DProps {
+  onClose: () => void;
+  // Caller provides a ref to the overlay div so we can position it directly
+  overlayRef: React.RefObject<HTMLDivElement | null>;
+}
 
-function FlatIPhone() {
+const BASE_SCALE = 3;
+// Identified from the GLB inspection log: this mesh is 0.317 × 0.702 = 94% × 97% of the body
+const SCREEN_MESH_NAME = "xXDHkMplTIDAXLN";
+
+function FlatIPhone({ overlayRef }: { overlayRef: React.RefObject<HTMLDivElement | null> }) {
   const group = useRef<THREE.Group>(null);
-  const { scene } = useGLTF("/models/iphone.glb");
+  const { scene, nodes } = useGLTF("/models/iphone.glb");
+  const { camera, size } = useThree();
+
+  // Pre-compute the LOCAL bounding box of the screen mesh (doesn't change
+  // with parent transform — getting it once is cheaper than every frame).
+  const screenLocalBox = useRef<THREE.Box3 | null>(null);
+  useEffect(() => {
+    const mesh = nodes[SCREEN_MESH_NAME] as THREE.Mesh | undefined;
+    if (!mesh || !mesh.geometry) {
+      console.warn(`[ExpandedPhone3D] screen mesh "${SCREEN_MESH_NAME}" not found`);
+      return;
+    }
+    mesh.geometry.computeBoundingBox();
+    screenLocalBox.current = mesh.geometry.boundingBox?.clone() ?? null;
+  }, [nodes]);
 
   useEffect(() => {
     if (!group.current) return;
@@ -41,69 +53,70 @@ function FlatIPhone() {
     group.current.rotation.set(-0.1, Math.PI - 0.4, 0);
   }, []);
 
+  // Reusable Vector3s to avoid allocation in useFrame
+  const tmpV = useRef(new THREE.Vector3());
+  const corners = useRef<THREE.Vector3[]>([
+    new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
+    new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(),
+  ]);
+
   useFrame(() => {
     if (!group.current) return;
-    // Lerp to face-camera (Y=π so the GLB's native -Z screen face turns to +Z = toward camera)
+
+    // Lerp to face-camera (Y=π so the GLB's native -Z screen turns to +Z = camera direction)
     group.current.rotation.x = THREE.MathUtils.lerp(group.current.rotation.x, 0, 0.07);
     group.current.rotation.y = THREE.MathUtils.lerp(group.current.rotation.y, Math.PI, 0.07);
     group.current.scale.lerp(new THREE.Vector3(BASE_SCALE, BASE_SCALE, BASE_SCALE), 0.07);
-  });
 
-  // Html sized to match the screen mesh.
-  // Math (verified by experiment, not theory):
-  // - Phone at group scale 3 → world body width = 0.336 * 3 = 1.008
-  // - Want Html world width = 0.94 * 1.008 = 0.948 (matches screen rect)
-  // - Inside the rotated group with scale 3, Html effective world scale =
-  //   3 * htmlLocalScale. So local_scale = 0.948 / (HTML_PX_WIDTH * 3)
-  // - Choosing 320 px wide content: local_scale = 0.948 / 960 = 0.000988 ≈ 0.001
-  const HTML_PX_WIDTH = 320;
-  const HTML_PX_HEIGHT = Math.round(HTML_PX_WIDTH * (PHONE_NATIVE_H * SCREEN_FRAC_H) / (PHONE_NATIVE_W * SCREEN_FRAC_W));
-  // Empirically tuned. 0.025 was close — 25% too narrow. Trying 0.032.
-  const HTML_LOCAL_SCALE = 0.032;
+    // Update overlay position from projected screen mesh bounds
+    const overlay = overlayRef.current;
+    const box = screenLocalBox.current;
+    const screenMesh = nodes[SCREEN_MESH_NAME] as THREE.Mesh | undefined;
+    if (!overlay || !box || !screenMesh) return;
+
+    // Build 8 corners of the screen mesh's LOCAL bounding box,
+    // transform each by the mesh's world matrix, then project.
+    const cs = corners.current;
+    cs[0].set(box.min.x, box.min.y, box.min.z);
+    cs[1].set(box.max.x, box.min.y, box.min.z);
+    cs[2].set(box.min.x, box.max.y, box.min.z);
+    cs[3].set(box.max.x, box.max.y, box.min.z);
+    cs[4].set(box.min.x, box.min.y, box.max.z);
+    cs[5].set(box.max.x, box.min.y, box.max.z);
+    cs[6].set(box.min.x, box.max.y, box.max.z);
+    cs[7].set(box.max.x, box.max.y, box.max.z);
+
+    let minPx = Infinity, minPy = Infinity, maxPx = -Infinity, maxPy = -Infinity;
+    for (const c of cs) {
+      tmpV.current.copy(c);
+      tmpV.current.applyMatrix4(screenMesh.matrixWorld);
+      tmpV.current.project(camera);
+      const px = (tmpV.current.x * 0.5 + 0.5) * size.width;
+      const py = (1 - (tmpV.current.y * 0.5 + 0.5)) * size.height;
+      if (px < minPx) minPx = px;
+      if (px > maxPx) maxPx = px;
+      if (py < minPy) minPy = py;
+      if (py > maxPy) maxPy = py;
+    }
+
+    overlay.style.left = `${minPx}px`;
+    overlay.style.top = `${minPy}px`;
+    overlay.style.width = `${maxPx - minPx}px`;
+    overlay.style.height = `${maxPy - minPy}px`;
+  });
 
   return (
     <group ref={group}>
       <primitive object={scene} />
-
-      {/* Email content overlay attached INSIDE the rotating group so it
-          follows the model's lerp automatically. Position in LOCAL coords:
-          - Native screen face is at z ≈ -PHONE_NATIVE_D/2 (model's -Z front)
-          - Place Html slightly in front (more negative z)
-          - Counter-rotate Y=π so content reads correctly through the group's
-            π rotation (otherwise mirrored). */}
-      <Html
-        transform
-        occlude={false}
-        position={[0, 0, -(PHONE_NATIVE_D / 2) - 0.001]}
-        rotation={[0, Math.PI, 0]}
-        scale={HTML_LOCAL_SCALE}
-        style={{
-          width: `${HTML_PX_WIDTH}px`,
-          height: `${HTML_PX_HEIGHT}px`,
-          background: "#F5F0EB",
-          borderRadius: `${HTML_PX_WIDTH * 0.13}px`,
-          overflow: "hidden",
-          pointerEvents: "auto",
-        }}
-      >
-        <div
-          className="w-full h-full overflow-y-auto"
-          style={{
-            WebkitOverflowScrolling: "touch",
-            background: "#F5F0EB",
-          }}
-          onWheel={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-        >
-          <PhoneContent scrollable={true} />
-        </div>
-      </Html>
     </group>
   );
 }
 
-export default function ExpandedPhone3D({ onClose }: ExpandedPhone3DProps) {
+const ExpandedPhone3D = forwardRef<ExpandedPhone3DHandle, ExpandedPhone3DProps>(function ExpandedPhone3D(
+  { onClose, overlayRef },
+  ref,
+) {
+  useImperativeHandle(ref, () => ({}), []);
   return (
     <Canvas
       camera={{ position: [0, 0, 4], fov: 35 }}
@@ -119,7 +132,7 @@ export default function ExpandedPhone3D({ onClose }: ExpandedPhone3DProps) {
         <pointLight position={[-3, 2, 4]} color="#D4A853" intensity={1.4} distance={14} />
         <pointLight position={[3, 0, -3]} color="#F5F0EB" intensity={1.0} distance={12} />
 
-        <FlatIPhone />
+        <FlatIPhone overlayRef={overlayRef} />
 
         <ContactShadows
           position={[0, -2, 0]}
@@ -136,4 +149,6 @@ export default function ExpandedPhone3D({ onClose }: ExpandedPhone3DProps) {
       </Suspense>
     </Canvas>
   );
-}
+});
+
+export default ExpandedPhone3D;
