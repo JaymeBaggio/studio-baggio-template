@@ -13,10 +13,10 @@ interface DockedPhone3DProps {
   onClick: () => void;
 }
 
-// Sized for a portrait container narrower than the demo's wide hero —
-// scale reduced 500→250 and camera pulled back so the phone reads as a phone,
-// not a black wall filling the viewport.
-const BASE_SCALE = 250;
+// Native GLB size measured at runtime: 0.31 × 0.64 × 0.05 units.
+// Camera z=5, fov=40 → visible height at z=0 is ~3.6 units.
+// Scale 4 puts phone at ~2.5 units tall — sits nicely centred with room to wobble.
+const BASE_SCALE = 4;
 
 function IPhoneModel({ onClick }: { onClick: () => void }) {
   const group = useRef<THREE.Group>(null);
