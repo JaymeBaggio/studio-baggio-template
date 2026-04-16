@@ -109,8 +109,9 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         WebkitOverflowScrolling: "touch",
       }}
     >
-      {/* Status bar */}
-      <div className="flex justify-between items-center px-5 pt-3 pb-2 text-[10px] font-semibold text-[#0A0A0A]/80 tabular-nums">
+      {/* Status bar — extra top padding to clear iPhone screen rounded corners
+          (status bar sits in the safe area above the dynamic island area) */}
+      <div className="flex justify-between items-center px-8 pt-7 pb-2 text-[10px] font-semibold text-[#0A0A0A]/80 tabular-nums">
         <span>9:41</span>
         <div className="flex items-center gap-1">
           <span>5G</span>
@@ -119,14 +120,14 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
       </div>
 
       {/* Email header */}
-      <div className="px-5 py-4 border-b border-[#0A0A0A]/8">
+      <div className="px-8 py-4 border-b border-[#0A0A0A]/8">
         <div className="text-[9px] uppercase tracking-[0.2em] text-[#999690] mb-2">Tuesday, 16 April</div>
         <div className="font-serif text-[#0A0A0A] text-[22px] leading-[1.1] mb-1">The Daily Edit</div>
         <div className="font-italic italic text-[#0A0A0A]/60 text-[13px]">issue no. 247</div>
       </div>
 
       {/* Featured article (full width) */}
-      <div className="px-5 py-5 border-b border-[#0A0A0A]/8">
+      <div className="px-8 py-5 border-b border-[#0A0A0A]/8">
         <img
           src={articles[0].image}
           alt=""
@@ -144,7 +145,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
       </div>
 
       {/* Section divider */}
-      <div className="px-5 py-4 flex items-center gap-3">
+      <div className="px-8 py-4 flex items-center gap-3">
         <div className="flex-1 h-px bg-[#D4A853]/30" />
         <span className="text-[8px] uppercase tracking-[0.2em] text-[#999690]">Today's stories</span>
         <div className="flex-1 h-px bg-[#D4A853]/30" />
@@ -153,7 +154,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
       {/* Article list */}
       <div className="flex flex-col">
         {articles.slice(1).map((article, i) => (
-          <div key={i} className="px-5 py-4 border-b border-[#0A0A0A]/8 flex gap-3">
+          <div key={i} className="px-8 py-4 border-b border-[#0A0A0A]/8 flex gap-3">
             <img
               src={article.image}
               alt=""
@@ -175,7 +176,7 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
       </div>
 
       {/* Shoppable edit */}
-      <div className="px-5 py-5 bg-[#0D0D0D] text-white">
+      <div className="px-8 py-5 bg-[#0D0D0D] text-white">
         <div className="text-[8px] uppercase tracking-[0.3em] text-[#D4A853] mb-2">Shoppable Edit</div>
         <div className="font-serif text-[18px] leading-[1.15] mb-4">This week's selection</div>
         <div className="grid grid-cols-2 gap-2">
@@ -194,8 +195,8 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="px-5 py-6 text-center">
+      {/* Footer — extra bottom padding to clear home indicator area */}
+      <div className="px-8 pt-6 pb-10 text-center">
         <div className="text-[10px] uppercase tracking-[0.3em] text-[#999690] mb-2">Studio Baggio</div>
         <div className="font-italic italic text-[#0A0A0A]/50 text-[11px]">
           Authority through clarity, proof and visibility.
