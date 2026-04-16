@@ -30,7 +30,27 @@ const BASE_SCALE = 3;
 
 function FlatIPhone() {
   const group = useRef<THREE.Group>(null);
-  const { scene } = useGLTF("/models/iphone.glb");
+  const { scene, nodes } = useGLTF("/models/iphone.glb");
+
+  // DEBUG: log all mesh names + bounding boxes once, so we can find the screen
+  useEffect(() => {
+    console.log("[iphone.glb] all nodes:", Object.keys(nodes));
+    Object.entries(nodes).forEach(([name, node]) => {
+      const obj = node as THREE.Object3D;
+      if ((obj as THREE.Mesh).isMesh) {
+        const box = new THREE.Box3().setFromObject(obj);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        const centre = new THREE.Vector3();
+        box.getCenter(centre);
+        console.log(
+          `[iphone.glb] mesh "${name}":`,
+          "size", size.toArray().map((n) => n.toFixed(4)),
+          "centre", centre.toArray().map((n) => n.toFixed(4)),
+        );
+      }
+    });
+  }, [nodes]);
 
   useEffect(() => {
     if (!group.current) return;
