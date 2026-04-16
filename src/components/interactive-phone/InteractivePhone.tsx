@@ -142,7 +142,10 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
 
             {/* Email content overlay — position + size set by R3F useFrame
                 projecting the screen mesh corners. Initially off-screen so
-                it doesn't flash before the first projection. */}
+                it doesn't flash before the first projection.
+                Border-radius uses iPhone screen's actual corner ratio
+                (~13% width / 6% height) so corners match the device curve
+                instead of poking out as sharp rectangles. */}
             <div
               ref={screenOverlayRef}
               style={{
@@ -153,6 +156,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
                 height: 0,
                 background: "#F5F0EB",
                 overflow: "hidden",
+                borderRadius: "13% / 6%",
                 zIndex: 2,
                 pointerEvents: "auto",
               }}
@@ -160,7 +164,11 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
             >
               <div
                 className="w-full h-full overflow-y-auto"
-                style={{ WebkitOverflowScrolling: "touch", background: "#F5F0EB" }}
+                style={{
+                  WebkitOverflowScrolling: "touch",
+                  background: "#F5F0EB",
+                  borderRadius: "13% / 6%",
+                }}
                 onWheel={(e) => e.stopPropagation()}
                 onTouchMove={(e) => e.stopPropagation()}
               >
