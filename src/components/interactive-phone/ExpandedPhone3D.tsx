@@ -107,10 +107,23 @@ function FlatIPhone({ overlayRef }: { overlayRef: React.RefObject<HTMLDivElement
       if (py > maxPy) maxPy = py;
     }
 
-    overlay.style.left = `${minPx}px`;
-    overlay.style.top = `${minPy}px`;
-    overlay.style.width = `${maxPx - minPx}px`;
-    overlay.style.height = `${maxPy - minPy}px`;
+    // Shrink the projected rect inward — the screen mesh includes area
+    // that's hidden under the iPhone's curved bezel. Without this shrink,
+    // the overlay extends above the visible screen and the rounded-corner
+    // padding lands in the bezel-hidden region (so content gets cut at
+    // the visible screen edge instead).
+    // Empirical values: 8% horizontal shrink, 5% vertical shrink.
+    const SHRINK_X = 0.92;
+    const SHRINK_Y = 0.95;
+    const w = (maxPx - minPx) * SHRINK_X;
+    const h = (maxPy - minPy) * SHRINK_Y;
+    const cx = (minPx + maxPx) / 2;
+    const cy = (minPy + maxPy) / 2;
+
+    overlay.style.left = `${cx - w / 2}px`;
+    overlay.style.top = `${cy - h / 2}px`;
+    overlay.style.width = `${w}px`;
+    overlay.style.height = `${h}px`;
   });
 
   return (
