@@ -135,25 +135,28 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
               <ExpandedPhone3D onClose={handleClose} />
             </div>
 
-            {/* Email content overlay — sized in vh units to match exactly where
-                the iPhone screen rect renders on screen.
-                Maths: phone in canvas at scale 3, camera z=4 fov=35.
-                Visible viewport-height units = 2.52. Phone height = 1.92 = 76vh.
-                iPhone screen ≈ 95% of body height = 72vh, 89% width = ~33vh / aspect.
-                Phone width at aspect 9:19.5 → 76vh * 9/19.5 = 35vh. Screen ≈ 31vh wide. */}
+            {/* Email content overlay — sized in vh units to land exactly on
+                the iPhone screen rect rendered in the R3F canvas.
+                Maths (phone at BASE_SCALE 3, camera z=4 fov=35):
+                - Visible viewport-height units = 2 * 4 * tan(17.5°) = 2.52
+                - Phone height = 1.92 world ≈ 76vh
+                - Phone width = 1.92 * (9/19.5) ≈ 35vh
+                - iPhone screen ≈ 87% body height (allowing for dynamic island
+                  + bottom indicator), ≈ 84% body width (proper bezel) =
+                  29vh wide × 66vh tall
+                - Screen corner radius ≈ 5vh */}
             <div
               style={{
                 position: "absolute",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                width: "30.5vh",
-                height: "70vh",
+                width: "29vh",
+                height: "66vh",
                 background: "#F5F0EB",
-                borderRadius: "4.2vh",
+                borderRadius: "5vh",
                 overflow: "hidden",
                 zIndex: 2,
-                boxShadow: "0 0 0 2px rgba(0,0,0,0.05) inset",
               }}
               onClick={(e) => e.stopPropagation()}
             >
