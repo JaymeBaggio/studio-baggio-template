@@ -109,10 +109,10 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         WebkitOverflowScrolling: "touch",
       }}
     >
-      {/* Status bar — modest padding now that the projection bug is fixed
-          (overlay matches the visible screen face exactly). px-8 clears the
-          rounded corner cutoff for "9:41" / "5G" text. */}
-      <div className="flex justify-between items-center px-8 pt-6 pb-2 text-[11px] font-semibold text-[#0A0A0A]/80 tabular-nums">
+      {/* Status bar — px-12 pt-8 to clear the rounded corner ellipse
+          (~33×33 at this overlay size). "9:41" / "5G" sit safely past the
+          corner curve. */}
+      <div className="flex justify-between items-center px-12 pt-8 pb-2 text-[11px] font-semibold text-[#0A0A0A]/80 tabular-nums">
         <span>9:41</span>
         <div className="flex items-center gap-1">
           <span>5G</span>
@@ -120,8 +120,9 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         </div>
       </div>
 
-      {/* Email header */}
-      <div className="px-8 py-4 border-b border-[#0A0A0A]/8">
+      {/* Email header — top of date line is still in the corner zone, so
+          px-12 here too. "The Daily Edit" and below are out of the corner. */}
+      <div className="px-12 py-4 border-b border-[#0A0A0A]/8">
         <div className="text-[9px] uppercase tracking-[0.2em] text-[#999690] mb-2">Tuesday, 16 April</div>
         <div className="font-serif text-[#0A0A0A] text-[22px] leading-[1.1] mb-1">The Daily Edit</div>
         <div className="font-italic italic text-[#0A0A0A]/60 text-[13px]">issue no. 247</div>
