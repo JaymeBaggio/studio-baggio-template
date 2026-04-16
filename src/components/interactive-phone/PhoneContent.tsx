@@ -109,9 +109,10 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         WebkitOverflowScrolling: "touch",
       }}
     >
-      {/* Status bar — extra top padding to clear iPhone screen rounded corners
-          (status bar sits in the safe area above the dynamic island area) */}
-      <div className="flex justify-between items-center px-8 pt-7 pb-2 text-[10px] font-semibold text-[#0A0A0A]/80 tabular-nums">
+      {/* Status bar — needs to clear the iPhone screen rounded corner.
+          Border-radius is 13% × 6% of overlay (~50×50px corner ellipse).
+          So status bar needs pt + horizontal-pad > corner radius to be clear. */}
+      <div className="flex justify-between items-center px-12 pt-14 pb-2 text-[10px] font-semibold text-[#0A0A0A]/80 tabular-nums">
         <span>9:41</span>
         <div className="flex items-center gap-1">
           <span>5G</span>
@@ -195,8 +196,8 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         </div>
       </div>
 
-      {/* Footer — extra bottom padding to clear home indicator area */}
-      <div className="px-8 pt-6 pb-10 text-center">
+      {/* Footer — extra bottom padding to clear bottom rounded corner */}
+      <div className="px-12 pt-6 pb-14 text-center">
         <div className="text-[10px] uppercase tracking-[0.3em] text-[#999690] mb-2">Studio Baggio</div>
         <div className="font-italic italic text-[#0A0A0A]/50 text-[11px]">
           Authority through clarity, proof and visibility.
