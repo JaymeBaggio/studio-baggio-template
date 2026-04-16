@@ -1,12 +1,16 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
+import { useInteractivePhone } from "./interactive-phone/InteractivePhoneContext";
 
-const SLIDE_COUNT = 24;
+const SLIDE_COUNT = 25; // 24 production slides + 1 dummy phone test slide
 
 export default function HorizontalDeck({ children }: { children: React.ReactNode }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const currentRef = useRef(0);
   const isAnimatingRef = useRef(false);
+  const { isExpanded } = useInteractivePhone();
+  const isExpandedRef = useRef(isExpanded);
+  isExpandedRef.current = isExpanded;
 
   useEffect(() => {
     const track = trackRef.current;
@@ -63,6 +67,7 @@ export default function HorizontalDeck({ children }: { children: React.ReactNode
     const WHEEL_THRESHOLD = 50;
 
     const onWheel = (e: WheelEvent) => {
+      if (isExpandedRef.current) return; // phone owns input
       e.preventDefault();
       if (isAnimatingRef.current) return;
 
@@ -82,10 +87,12 @@ export default function HorizontalDeck({ children }: { children: React.ReactNode
     let touchStartX = 0;
     let touchStartY = 0;
     const onTouchStart = (e: TouchEvent) => {
+      if (isExpandedRef.current) return;
       touchStartX = e.touches[0].clientX;
       touchStartY = e.touches[0].clientY;
     };
     const onTouchEnd = (e: TouchEvent) => {
+      if (isExpandedRef.current) return;
       if (isAnimatingRef.current) return;
       const dx = touchStartX - e.changedTouches[0].clientX;
       const dy = touchStartY - e.changedTouches[0].clientY;
@@ -96,6 +103,7 @@ export default function HorizontalDeck({ children }: { children: React.ReactNode
 
     // Keyboard
     const onKeyDown = (e: KeyboardEvent) => {
+      if (isExpandedRef.current) return; // Escape handled by InteractivePhone
       if (e.repeat) return;
       if (e.key === "ArrowRight" || e.key === "ArrowDown") {
         e.preventDefault();

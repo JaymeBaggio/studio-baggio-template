@@ -19,15 +19,21 @@ import BrandGridSlide from "./components/slides/BrandGridSlide";
 import TeamInfluenceSlide from "./components/slides/TeamInfluenceSlide";
 import SocialProofSlide from "./components/slides/SocialProofSlide";
 import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
+import PhoneTestSlide from "./components/slides/PhoneTestSlide";
+
+import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
+import Backdrop from "./components/interactive-phone/Backdrop";
 
 import { images, copy } from "./data/placeholders";
 
 function App() {
   return (
-    <SmoothScroll>
-      <Navigation />
-      <SlideIndicator />
-      <HorizontalDeck>
+    <InteractivePhoneProvider>
+      <SmoothScroll>
+        <Navigation />
+        <SlideIndicator />
+        <Backdrop />
+        <HorizontalDeck>
         {/* 1. Cover */}
         <CoverSlide />
 
@@ -179,8 +185,12 @@ function App() {
 
         {/* 24. Closing */}
         <ClosingSlide />
-      </HorizontalDeck>
-    </SmoothScroll>
+
+        {/* 25. TEST: interactive phone (DUMMY — delete once moved into DeviceMockupSlide) */}
+        <PhoneTestSlide />
+        </HorizontalDeck>
+      </SmoothScroll>
+    </InteractivePhoneProvider>
   );
 }
 
