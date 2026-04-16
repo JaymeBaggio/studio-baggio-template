@@ -174,6 +174,25 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
               >
                 <PhoneContent scrollable={true} />
               </div>
+
+              {/* Dynamic island — black pill at top-center of the screen.
+                  Sits above the scrollable content (absolute, pointer-events
+                  none) so it never moves and never blocks scrolling. */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  top: "2.5%",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: "32%",
+                  height: "3.4%",
+                  background: "#0A0A0A",
+                  borderRadius: "999px",
+                  zIndex: 5,
+                  pointerEvents: "none",
+                }}
+              />
             </div>
 
             {/* Close button — top-right */}
