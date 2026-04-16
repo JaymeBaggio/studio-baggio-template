@@ -1,15 +1,21 @@
 import { Suspense, useRef, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, Html, ContactShadows, Environment } from "@react-three/drei";
+import { useGLTF, ContactShadows, Environment } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
-import PhoneContent from "./PhoneContent";
 
 // Same iPhone GLB as DockedPhone3D — visual continuity preserved.
 // Pose: flat-on facing camera (rotated 180° on Y so screen faces camera).
-// Scrollable content rendered ONTO screen face via drei <Html transform>.
 //
-// Built per /3d-landing-pages skill (Technique 8 + drei Html transform).
+// Architecture decision: scrollable content is NOT rendered via <Html transform>
+// because drei's CSS3D scale math fights with parent group scale and produced
+// unreliable sizing across iterations. Instead, the HTML email content is
+// rendered as a standard fixed-position overlay (in InteractivePhone.tsx),
+// sized in vh units to land exactly on the iPhone screen rect. This works
+// because the expanded phone is face-on and static — no perspective warping
+// needed. Result: sharp text, native scroll, reliable sizing.
+//
+// Built per /3d-landing-pages skill (Technique 8: Loaded GLB Model).
 
 interface ExpandedPhone3DProps {
   onClose: () => void;
@@ -44,50 +50,6 @@ function FlatIPhone() {
   return (
     <group ref={group}>
       <primitive object={scene} />
-
-      {/* HTML overlay covers the FULL iPhone screen rect.
-          Math:
-          - Phone native screen rect ≈ 0.285w × 0.608h (92% × 95% of body)
-          - At group scale 3: world rect = 0.855 × 1.824
-          - Html scale 0.001 inside group scale 3 → 0.003 world per px
-          - 300 × 640 px overlay → 0.9 × 1.92 world (covers screen + tiny
-            overhang into bezel — ensures NO wallpaper bleeds through)
-
-          After Y=π group rotation, the screen face (native local -Z) ends
-          up facing world +Z (toward camera). Html positioned at local -Z
-          ends up in front of the screen. Html itself counter-rotates Y=π
-          so its content faces camera (otherwise mirrored).
-
-          Solid cream background ensures the GLB's baked wallpaper is
-          completely hidden behind the email content. */}
-      <Html
-        transform
-        position={[0, 0.008, -0.030]}
-        rotation={[0, Math.PI, 0]}
-        scale={0.001}
-        occlude={false}
-        style={{
-          width: "300px",
-          height: "640px",
-          background: "#F5F0EB",
-          pointerEvents: "auto",
-          overflow: "hidden",
-          borderRadius: "42px",
-        }}
-      >
-        <div
-          className="w-full h-full overflow-y-auto"
-          style={{
-            WebkitOverflowScrolling: "touch",
-            background: "#F5F0EB",
-          }}
-          onWheel={(e) => e.stopPropagation()}
-          onTouchMove={(e) => e.stopPropagation()}
-          onPointerDown={(e) => e.stopPropagation()}
-        >
-          <PhoneContent scrollable={true} />
-        </div>
-      </Html>
     </group>
   );
 }
