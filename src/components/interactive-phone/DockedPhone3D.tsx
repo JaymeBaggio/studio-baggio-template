@@ -1,5 +1,5 @@
 import { Suspense, useRef, useState, useEffect } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useGLTF, Float, ContactShadows, Environment, OrbitControls } from "@react-three/drei";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
@@ -93,10 +93,8 @@ function CursorReset() {
 // Restrict OrbitControls so the phone can't spin into weird views — keep
 // the rotation gentle and centred on the phone.
 function ConstrainedControls() {
-  const { camera, gl } = useThree();
   return (
     <OrbitControls
-      args={[camera, gl.domElement]}
       enablePan={false}
       enableZoom={false}
       enableDamping
