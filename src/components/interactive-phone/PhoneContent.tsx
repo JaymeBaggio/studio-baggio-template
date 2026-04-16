@@ -109,10 +109,9 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         WebkitOverflowScrolling: "touch",
       }}
     >
-      {/* Status bar — top-of-screen elements need extra horizontal padding
-          to clear the rounded corner ellipse (~46×47px at the corner of
-          the shrunk overlay). px-12 (48px) clears it. */}
-      <div className="flex justify-between items-center px-12 pt-8 pb-2 text-[11px] font-semibold text-[#0A0A0A]/80 tabular-nums">
+      {/* Status bar — top elements need to clear the rounded corner
+          AND the iPhone GLB bezel mesh which curves over screen corners. */}
+      <div className="flex justify-between items-center px-16 pt-12 pb-3 text-[11px] font-semibold text-[#0A0A0A]/80 tabular-nums">
         <span>9:41</span>
         <div className="flex items-center gap-1">
           <span>5G</span>
@@ -120,9 +119,8 @@ export default function PhoneContent({ scrollable = false }: PhoneContentProps) 
         </div>
       </div>
 
-      {/* Email header — also needs px-12 since it sits within the corner
-          curve area at the top of the screen. */}
-      <div className="px-12 py-4 border-b border-[#0A0A0A]/8">
+      {/* Email header */}
+      <div className="px-16 py-4 border-b border-[#0A0A0A]/8">
         <div className="text-[9px] uppercase tracking-[0.2em] text-[#999690] mb-2">Tuesday, 16 April</div>
         <div className="font-serif text-[#0A0A0A] text-[22px] leading-[1.1] mb-1">The Daily Edit</div>
         <div className="font-italic italic text-[#0A0A0A]/60 text-[13px]">issue no. 247</div>
