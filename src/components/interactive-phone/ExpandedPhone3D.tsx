@@ -15,15 +15,12 @@ interface ExpandedPhone3DProps {
   onClose: () => void;
 }
 
-// Native model is 0.31 wide × 0.64 tall × 0.05 deep.
-// Scale 5 → 1.55 × 3.2 × 0.25 units. Camera at z=4 with fov=35 →
-// visible height ≈ 2.52 units, so phone fills ~80% of viewport height.
-const BASE_SCALE = 5;
-
-// Screen rect on native iPhone GLB (estimated from typical iPhone 15 Pro Max
-// proportions): screen is roughly 92% of the height, 90% of the width,
-// inset slightly from the front face. With native size 0.31×0.64,
-// screen ≈ 0.28 × 0.59. Half-thickness ≈ 0.025, so screen face Z = +0.025.
+// Native model: 0.31 × 0.64 × 0.05 units.
+// We discovered empirically that the GLB's screen face is at LOCAL z = -0.025
+// (the model's "front" is on -Z, "back" with camera bumps on +Z).
+// Rotation Y = π flips it so screen faces the camera at +Z.
+// At BASE_SCALE 3 with camera z=4 fov=35, phone ≈ 76% of viewport height.
+const BASE_SCALE = 3;
 
 function FlatIPhone() {
   const group = useRef<THREE.Group>(null);
@@ -48,25 +45,21 @@ function FlatIPhone() {
     <group ref={group}>
       <primitive object={scene} />
 
-      {/* HTML overlay sits in FRONT of the screen face.
-          Because we rotate the model 180° on Y, the screen normal points
-          toward +Z (toward camera), so position Html slightly in +Z.
-          But the Html is a child of the rotated group → it inherits that
-          rotation, so we counter-rotate it 180° on Y so its content faces
-          camera correctly.
-
-          Screen rect ≈ 0.28w × 0.59h native units. distanceFactor 0.18
-          gives a comfortable readable resolution. */}
+      {/* HTML overlay sits in FRONT of the rotated screen face.
+          After Y=π rotation, the original screen face (local -Z) ends up
+          facing world +Z (toward camera). So we want Html positioned at
+          local -Z (which becomes world +Z post-rotation, in front of screen).
+          The Html itself ALSO needs counter-rotation Y=π so its readable
+          side faces the camera (otherwise it'd be mirrored). */}
       <Html
         transform
-        position={[0, 0.005, 0.028]}
+        position={[0, 0.005, -0.029]}
         rotation={[0, Math.PI, 0]}
-        distanceFactor={0.18}
+        distanceFactor={0.4}
         occlude={false}
-        zIndexRange={[0, 0]}
         style={{
-          width: "280px",
-          height: "590px",
+          width: "260px",
+          height: "565px",
           background: "transparent",
           pointerEvents: "auto",
         }}
