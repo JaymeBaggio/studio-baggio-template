@@ -341,8 +341,11 @@ export default function FrameworkSlide({
 
 // ── Sub-components ──────────────────────────────────────────────
 
-// Latest step gets ~55% height with full images. Previous steps compress
-// to thin summary lines (~40px each) showing just number + title.
+// Same layout as LayerBand (images always visible), but the LATEST step
+// enters with a dramatic "pop" (scale 1.15 + full opacity) then settles
+// to normal size after 600ms. Previous steps stay at their equal-share
+// size with images, just dimmed. Creates the "arrives big, joins the stack"
+// effect Jayme wants without collapsing previous steps to text-only.
 function FocusBand({
   step,
   title,
@@ -362,68 +365,58 @@ function FocusBand({
   useEffect(() => {
     if (!ref.current) return;
     if (isLatest) {
-      // New step enters big
+      // Enter BIG: scale up + slight shadow, then settle to normal after 600ms
       gsap.fromTo(ref.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
+        { y: 30, opacity: 0, scale: 1.12, transformOrigin: "center center" },
+        { y: 0, opacity: 1, scale: 1.12, duration: 0.45, ease: "power2.out" },
       );
+      // Settle down to normal size after the "pop" moment
+      gsap.to(ref.current, {
+        scale: 1,
+        duration: 0.4,
+        delay: 0.7,
+        ease: "power2.inOut",
+      });
     } else {
-      // Previous step compresses — GSAP animates to dimmed state
-      gsap.to(ref.current, { opacity: 0.55, duration: 0.3, ease: "power1.out" });
+      // Previous step: dim + ensure scale is 1 (settled)
+      gsap.to(ref.current, { opacity: 0.45, scale: 1, duration: 0.3, ease: "power1.out" });
     }
   }, [isLatest]);
 
-  if (isLatest) {
-    // EXPANDED view — large with images
-    return (
-      <div
-        ref={ref}
-        className="flex items-start gap-6 px-2 border-b border-[#0A0A0A]/8 flex-1 min-h-0"
-        style={{ opacity: 0 }}
-      >
-        <div className="w-[28%] flex-shrink-0 flex items-start gap-4 pt-3">
-          <span
-            className="font-serif text-[#0A0A0A]/15 tabular-nums leading-none"
-            style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 300 }}
-          >
-            {String(step + 1).padStart(2, "0")}
-          </span>
-          <div>
-            <h3 className="font-sans text-[13px] font-semibold text-[#0A0A0A] leading-tight uppercase tracking-wider">
-              {title}
-            </h3>
-            <p className="font-sans text-[11px] text-[#0A0A0A]/50 leading-snug mt-1 max-w-[200px]">
-              {description}
-            </p>
-          </div>
-        </div>
-        <div className="flex-1 flex gap-3 items-start overflow-hidden pt-2 pb-2" style={{ height: "100%" }}>
-          {images.map((src, i) => (
-            <div
-              key={i}
-              className="h-full aspect-[3/2] rounded overflow-hidden flex-shrink-0 bg-[#0A0A0A]/5"
-            >
-              <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  const bandHeight = `${Math.floor(100 / Math.max(1, 1))}%`; // flex-1 handles sizing
 
-  // COMPRESSED view — thin single line, no images
   return (
     <div
       ref={ref}
-      className="flex items-center gap-4 px-2 border-b border-[#0A0A0A]/6 flex-shrink-0"
-      style={{ height: "38px", opacity: 0 }}
+      className="flex items-center gap-6 px-2 border-b border-[#0A0A0A]/8 flex-1 min-h-0 relative"
+      style={{ opacity: 0, zIndex: isLatest ? 10 : 1 }}
     >
-      <span className="font-serif text-[#0A0A0A]/12 text-xl tabular-nums leading-none" style={{ fontWeight: 300 }}>
-        {String(step + 1).padStart(2, "0")}
-      </span>
-      <h3 className="font-sans text-[10px] font-medium text-[#0A0A0A]/40 uppercase tracking-wider">
-        {title}
-      </h3>
+      <div className="w-[28%] flex-shrink-0 flex items-center gap-4">
+        <span
+          className="font-serif text-[#0A0A0A]/15 tabular-nums leading-none"
+          style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)", fontWeight: 300 }}
+        >
+          {String(step + 1).padStart(2, "0")}
+        </span>
+        <div>
+          <h3 className="font-sans text-[12px] font-semibold text-[#0A0A0A] leading-tight uppercase tracking-wider">
+            {title}
+          </h3>
+          <p className="font-sans text-[10px] text-[#0A0A0A]/50 leading-snug mt-0.5 max-w-[200px]">
+            {description}
+          </p>
+        </div>
+      </div>
+      <div className="flex-1 flex gap-2 items-center overflow-hidden h-[85%]">
+        {images.map((src, i) => (
+          <div
+            key={i}
+            className="h-full aspect-[3/2] rounded overflow-hidden flex-shrink-0 bg-[#0A0A0A]/5"
+          >
+            <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
