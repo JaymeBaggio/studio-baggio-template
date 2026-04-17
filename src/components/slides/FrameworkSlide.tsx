@@ -15,7 +15,7 @@ interface FrameworkStep {
 
 interface FrameworkSlideProps {
   id: string;
-  variant?: "layers" | "split-build";
+  variant?: "layers" | "layers-focus" | "split-build";
   kicker?: string;
   headline?: string;
   subtitle?: string;
@@ -240,7 +240,56 @@ export default function FrameworkSlide({
   }
 
   // ──────────────────────────────────────────────
-  // VARIANT: layers (default)
+  // VARIANT: layers-focus (new step enters BIG, previous compress to thin lines)
+  // ──────────────────────────────────────────────
+  if (variant === "layers-focus") {
+    return (
+      <Slide bg="cream" id={id} anim="stagger" align="top">
+        <div ref={containerRef} className="w-full h-full flex flex-col">
+          <div className="mb-4 flex items-end justify-between">
+            <div>
+              <span className="deck-animate kicker text-[#0A0A0A]/60 mb-2 block">{kicker}</span>
+              <h2
+                className="deck-animate dual-serif text-[#0A0A0A] uppercase leading-[0.95]"
+                style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
+              >
+                {headline}
+              </h2>
+            </div>
+            <div className="deck-animate">
+              <StepDots />
+            </div>
+          </div>
+
+          <div className="flex-1 flex flex-col gap-0 overflow-hidden">
+            {currentStep === -1 && (
+              <div className="flex-1 flex items-center justify-center">
+                <p className="font-sans text-[#0A0A0A]/25 text-sm tracking-wider uppercase">
+                  Scroll to reveal each stage
+                </p>
+              </div>
+            )}
+            {steps.map((step, si) => (
+              si <= currentStep && (
+                <FocusBand
+                  key={si}
+                  step={si}
+                  title={step.title}
+                  description={step.description}
+                  images={step.images}
+                  isLatest={si === currentStep}
+                  revealedCount={currentStep + 1}
+                />
+              )
+            ))}
+          </div>
+        </div>
+      </Slide>
+    );
+  }
+
+  // ──────────────────────────────────────────────
+  // VARIANT: layers (default — all bands equal size)
   // ──────────────────────────────────────────────
   return (
     <Slide bg="cream" id={id} anim="stagger" align="top">
@@ -291,6 +340,94 @@ export default function FrameworkSlide({
 }
 
 // ── Sub-components ──────────────────────────────────────────────
+
+// Latest step gets ~55% height with full images. Previous steps compress
+// to thin summary lines (~40px each) showing just number + title.
+function FocusBand({
+  step,
+  title,
+  description,
+  images,
+  isLatest,
+  revealedCount,
+}: {
+  step: number;
+  title: string;
+  description: string;
+  images: string[];
+  isLatest: boolean;
+  revealedCount: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    if (isLatest) {
+      // New step enters big
+      gsap.fromTo(ref.current,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
+      );
+    } else {
+      // Previous step compresses — GSAP animates to dimmed state
+      gsap.to(ref.current, { opacity: 0.55, duration: 0.3, ease: "power1.out" });
+    }
+  }, [isLatest]);
+
+  if (isLatest) {
+    // EXPANDED view — large with images
+    return (
+      <div
+        ref={ref}
+        className="flex items-start gap-6 px-2 border-b border-[#0A0A0A]/8 flex-1 min-h-0"
+        style={{ opacity: 0 }}
+      >
+        <div className="w-[28%] flex-shrink-0 flex items-start gap-4 pt-3">
+          <span
+            className="font-serif text-[#0A0A0A]/15 tabular-nums leading-none"
+            style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 300 }}
+          >
+            {String(step + 1).padStart(2, "0")}
+          </span>
+          <div>
+            <h3 className="font-sans text-[13px] font-semibold text-[#0A0A0A] leading-tight uppercase tracking-wider">
+              {title}
+            </h3>
+            <p className="font-sans text-[11px] text-[#0A0A0A]/50 leading-snug mt-1 max-w-[200px]">
+              {description}
+            </p>
+          </div>
+        </div>
+        <div className="flex-1 flex gap-3 items-start overflow-hidden pt-2 pb-2" style={{ height: "100%" }}>
+          {images.map((src, i) => (
+            <div
+              key={i}
+              className="h-full aspect-[3/2] rounded overflow-hidden flex-shrink-0 bg-[#0A0A0A]/5"
+            >
+              <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // COMPRESSED view — thin single line, no images
+  return (
+    <div
+      ref={ref}
+      className="flex items-center gap-4 px-2 border-b border-[#0A0A0A]/6 flex-shrink-0"
+      style={{ height: "38px", opacity: 0 }}
+    >
+      <span className="font-serif text-[#0A0A0A]/12 text-xl tabular-nums leading-none" style={{ fontWeight: 300 }}>
+        {String(step + 1).padStart(2, "0")}
+      </span>
+      <h3 className="font-sans text-[10px] font-medium text-[#0A0A0A]/40 uppercase tracking-wider">
+        {title}
+      </h3>
+    </div>
+  );
+}
 
 function LayerBand({
   step,
