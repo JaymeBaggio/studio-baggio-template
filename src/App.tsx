@@ -215,11 +215,8 @@ function App() {
         {/* 24. Closing */}
         <ClosingSlide />
 
-        {/* 25. Framework — VARIANT A: ascending layers (equal size bands) */}
+        {/* 25. Framework — VARIANT A: ascending layers (stack from bottom) */}
         <FrameworkSlide id="framework-layers" variant="layers" />
-
-        {/* 26. Framework — VARIANT A2: layers-focus (new step BIG, previous compress) */}
-        <FrameworkSlide id="framework-layers-focus" variant="layers-focus" />
 
         {/* 26. Framework — VARIANT C: split build (collage + text swap) */}
         <FrameworkSlide id="framework-split" variant="split-build" />

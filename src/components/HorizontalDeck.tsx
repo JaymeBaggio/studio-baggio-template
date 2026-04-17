@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useInteractivePhone } from "./interactive-phone/InteractivePhoneContext";
 
-const SLIDE_COUNT = 29; // 24 production + 3 framework variants + 2 comparison-table variants
+const SLIDE_COUNT = 28; // 24 production + 2 framework variants + 2 comparison-table variants
 
 export default function HorizontalDeck({ children }: { children: React.ReactNode }) {
   const trackRef = useRef<HTMLDivElement>(null);
