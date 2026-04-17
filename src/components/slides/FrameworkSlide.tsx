@@ -280,7 +280,6 @@ export default function FrameworkSlide({
                 description={step.description}
                 images={step.images}
                 isLatest={si === currentStep}
-                total={total}
                 revealedCount={currentStep + 1}
               />
             )
@@ -299,7 +298,6 @@ function LayerBand({
   description,
   images,
   isLatest,
-  total,
   revealedCount,
 }: {
   step: number;
@@ -307,7 +305,6 @@ function LayerBand({
   description: string;
   images: string[];
   isLatest: boolean;
-  total: number;
   revealedCount: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
