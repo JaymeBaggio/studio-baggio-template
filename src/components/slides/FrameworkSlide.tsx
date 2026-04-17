@@ -383,8 +383,6 @@ function FocusBand({
     }
   }, [isLatest]);
 
-  const bandHeight = `${Math.floor(100 / Math.max(1, 1))}%`; // flex-1 handles sizing
-
   return (
     <div
       ref={ref}
