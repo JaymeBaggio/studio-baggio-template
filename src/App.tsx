@@ -20,6 +20,7 @@ import TeamInfluenceSlide from "./components/slides/TeamInfluenceSlide";
 import SocialProofSlide from "./components/slides/SocialProofSlide";
 import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
 import ComparisonTableSlide from "./components/slides/ComparisonTableSlide";
+import FrameworkSlide from "./components/slides/FrameworkSlide";
 
 import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
 
@@ -214,7 +215,13 @@ function App() {
         {/* 24. Closing */}
         <ClosingSlide />
 
-        {/* 25. Comparison table — VARIANT A: highlighted column (Studio Baggio
+        {/* 25. Framework — VARIANT A: ascending layers (stack from bottom) */}
+        <FrameworkSlide id="framework-layers" variant="layers" />
+
+        {/* 26. Framework — VARIANT C: split build (collage + text swap) */}
+        <FrameworkSlide id="framework-split" variant="split-build" />
+
+        {/* 27. Comparison table — VARIANT A: highlighted column (Studio Baggio
              column has paper-card bg + thin top rule, others ghost) */}
         <ComparisonTableSlide
           id="comparison-highlighted"
