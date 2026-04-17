@@ -349,7 +349,6 @@ function FocusBand({
   description,
   images,
   isLatest,
-  revealedCount,
 }: {
   step: number;
   title: string;
