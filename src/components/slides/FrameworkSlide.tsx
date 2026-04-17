@@ -1,25 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import gsap from "gsap";
 import Slide from "../Slide";
 
 // Framework / process slide with click-triggered progressive reveal.
-// Two variants:
-//
-// "layers"      — Ascending horizontal bands that stack from bottom. Each
-//   click adds a new band on top. Previous bands dim. The "compounding
-//   value" metaphor is literal — you watch the stack grow.
-//
-// "split-build" — Left half: living collage that builds with each click
-//   (images layer with offset/rotation). Right half: text that crossfades
-//   per step. The most editorial, highest-impact variant.
-//
-// Architecture: the slide registers its own wheel/keyboard listener at
-// capture phase. While steps remain, it intercepts navigation gestures and
-// reveals the next step instead of advancing the deck. After all steps are
-// shown, the next gesture passes through to HorizontalDeck normally.
-//
-// Skills used: /gsap-utils (random for collage positions, distribute for
-// stagger timing), /gsap-scrolltrigger patterns adapted for click-trigger.
+// Each scroll/arrow-key reveals the next step (one at a time). The slide
+// stays in place until ALL steps are revealed, then the next gesture
+// advances the deck normally.
 
 interface FrameworkStep {
   title: string;
@@ -36,7 +22,6 @@ interface FrameworkSlideProps {
   steps?: FrameworkStep[];
 }
 
-// Placeholder steps with Unsplash images — swap for real content
 const defaultSteps: FrameworkStep[] = [
   {
     title: "Business Context",
@@ -109,12 +94,13 @@ export default function FrameworkSlide({
   subtitle = "Each stage compounds the value of the last.",
   steps = defaultSteps,
 }: FrameworkSlideProps) {
-  const [currentStep, setCurrentStep] = useState(-1); // -1 = nothing revealed yet
+  const [currentStep, setCurrentStep] = useState(-1);
   const [isActive, setIsActive] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const cooldownRef = useRef(false);
   const total = steps.length;
 
-  // Track which slide we're on via slide-change event
+  // Track active slide
   useEffect(() => {
     const handler = (e: Event) => {
       const slideEl = containerRef.current?.closest("[data-deck-slide]");
@@ -123,53 +109,39 @@ export default function FrameworkSlide({
       const myIndex = allSlides.indexOf(slideEl);
       const activeIndex = (e as CustomEvent).detail;
       setIsActive(myIndex === activeIndex);
-      if (myIndex !== activeIndex) setCurrentStep(-1); // reset on leave
+      if (myIndex !== activeIndex) setCurrentStep(-1);
     };
     window.addEventListener("slide-change", handler);
     return () => window.removeEventListener("slide-change", handler);
   }, []);
 
-  // Hijack navigation while steps remain
+  const advanceStep = useCallback(() => {
+    if (cooldownRef.current) return true;
+    if (currentStep >= total - 1) return false;
+    cooldownRef.current = true;
+    setCurrentStep((s) => s + 1);
+    setTimeout(() => { cooldownRef.current = false; }, 500);
+    return true;
+  }, [currentStep, total]);
+
+  // Hijack navigation — capture phase, 500ms cooldown between advances
   useEffect(() => {
     if (!isActive) return;
 
-    let wheelAccum = 0;
-    let wheelTimer: ReturnType<typeof setTimeout> | null = null;
-
-    const advanceStep = () => {
-      if (currentStep < total - 1) {
-        setCurrentStep((s) => s + 1);
-        return true; // consumed
-      }
-      return false; // all shown, let deck handle
-    };
-
     const onWheel = (e: WheelEvent) => {
-      if (currentStep >= total - 1) return; // all shown
-      if (e.deltaY <= 0) return; // only forward (scroll down)
-
-      wheelAccum += e.deltaY;
-      if (wheelTimer) clearTimeout(wheelTimer);
-      wheelTimer = setTimeout(() => { wheelAccum = 0; }, 200);
-
-      if (wheelAccum >= 50) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        wheelAccum = 0;
-        advanceStep();
-      } else {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-      }
+      if (currentStep >= total - 1) return;
+      if (e.deltaY <= 0) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      advanceStep();
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (currentStep >= total - 1) return;
       if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-        if (advanceStep()) {
-          e.preventDefault();
-          e.stopImmediatePropagation();
-        }
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        advanceStep();
       }
     };
 
@@ -179,33 +151,61 @@ export default function FrameworkSlide({
       window.removeEventListener("wheel", onWheel, { capture: true });
       window.removeEventListener("keydown", onKeyDown, { capture: true });
     };
-  }, [isActive, currentStep, total]);
+  }, [isActive, currentStep, total, advanceStep]);
 
+  // Step counter dots (shared by both variants)
+  const StepDots = () => (
+    <div className="flex items-center gap-4">
+      <div className="flex gap-1.5">
+        {steps.map((_, i) => (
+          <div
+            key={i}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: i <= currentStep ? 8 : 5,
+              height: i <= currentStep ? 8 : 5,
+              backgroundColor: i <= currentStep ? "#0A0A0A" : "rgba(10,10,10,0.15)",
+            }}
+          />
+        ))}
+      </div>
+      <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#0A0A0A]/40 tabular-nums">
+        {currentStep >= 0 ? `${currentStep + 1} / ${total}` : `— / ${total}`}
+      </span>
+    </div>
+  );
+
+  // ──────────────────────────────────────────────
+  // VARIANT: split-build
+  // ──────────────────────────────────────────────
   if (variant === "split-build") {
+    const step = currentStep >= 0 ? steps[currentStep] : null;
     return (
       <Slide bg="cream" id={id} anim="stagger" align="top">
         <div ref={containerRef} className="w-full h-full grid grid-cols-12 gap-6">
           {/* Left: collage that builds */}
           <div className="col-span-7 relative h-full overflow-hidden">
-            {steps.map((step, si) => (
-              <CollageImages
-                key={si}
-                step={si}
-                images={step.images}
-                visible={si <= currentStep}
-                isLatest={si === currentStep}
-              />
+            {steps.map((s, si) => (
+              si <= currentStep && (
+                <CollageImages
+                  key={si}
+                  step={si}
+                  images={s.images}
+                  isLatest={si === currentStep}
+                />
+              )
             ))}
             {currentStep === -1 && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <p className="font-sans text-[#0A0A0A]/30 text-sm tracking-wider uppercase">
+                <p className="font-sans text-[#0A0A0A]/25 text-sm tracking-wider uppercase">
                   Scroll to begin
                 </p>
               </div>
             )}
           </div>
 
-          {/* Right: text that swaps */}
+          {/* Right: text that SWAPS — only the current step is mounted.
+              React key forces unmount/remount so there's never overlap. */}
           <div className="col-span-5 flex flex-col justify-between h-full pl-[2vw]">
             <div>
               <span className="deck-animate kicker text-[#0A0A0A]/60 mb-4 block">{kicker}</span>
@@ -219,32 +219,19 @@ export default function FrameworkSlide({
                 {subtitle}
               </p>
 
-              {/* Current step text */}
-              <div className="relative min-h-[160px]">
-                {steps.map((step, si) => (
-                  <StepText key={si} step={si} title={step.title} description={step.description} visible={si === currentStep} />
-                ))}
-              </div>
+              {/* Only ONE step text mounted at a time */}
+              {step && (
+                <SingleStepText
+                  key={currentStep}
+                  step={currentStep}
+                  title={step.title}
+                  description={step.description}
+                />
+              )}
             </div>
 
-            {/* Step counter */}
-            <div className="deck-animate flex items-center gap-4 pb-4">
-              <div className="flex gap-1.5">
-                {steps.map((_, i) => (
-                  <div
-                    key={i}
-                    className="rounded-full transition-all duration-300"
-                    style={{
-                      width: i <= currentStep ? 8 : 5,
-                      height: i <= currentStep ? 8 : 5,
-                      backgroundColor: i <= currentStep ? "#0A0A0A" : "rgba(10,10,10,0.15)",
-                    }}
-                  />
-                ))}
-              </div>
-              <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#0A0A0A]/40 tabular-nums">
-                {currentStep >= 0 ? `${currentStep + 1} / ${total}` : `— / ${total}`}
-              </span>
+            <div className="deck-animate pb-4">
+              <StepDots />
             </div>
           </div>
         </div>
@@ -252,46 +239,51 @@ export default function FrameworkSlide({
     );
   }
 
-  // Variant: layers (default)
+  // ──────────────────────────────────────────────
+  // VARIANT: layers (default)
+  // ──────────────────────────────────────────────
   return (
     <Slide bg="cream" id={id} anim="stagger" align="top">
       <div ref={containerRef} className="w-full h-full flex flex-col">
         {/* Header */}
-        <div className="mb-4">
-          <div className="deck-animate flex items-baseline justify-between gap-6 mb-2">
-            <span className="kicker text-[#0A0A0A]/60">{kicker}</span>
-            <span className="font-sans text-[10px] tracking-[0.2em] uppercase text-[#0A0A0A]/40 tabular-nums">
-              {currentStep >= 0 ? `${currentStep + 1} / ${total}` : `— / ${total}`}
-            </span>
+        <div className="mb-4 flex items-end justify-between">
+          <div>
+            <span className="deck-animate kicker text-[#0A0A0A]/60 mb-2 block">{kicker}</span>
+            <h2
+              className="deck-animate dual-serif text-[#0A0A0A] uppercase leading-[0.95]"
+              style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
+            >
+              {headline}
+            </h2>
           </div>
-          <h2
-            className="deck-animate dual-serif text-[#0A0A0A] uppercase leading-[0.95]"
-            style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}
-          >
-            {headline}
-          </h2>
+          <div className="deck-animate">
+            <StepDots />
+          </div>
         </div>
 
-        {/* Stacking bands */}
-        <div className="flex-1 relative overflow-hidden">
+        {/* Bands — flex column, each band is a real flow element.
+            Hidden bands have display:none. Revealed bands animate in. */}
+        <div className="flex-1 flex flex-col gap-1 overflow-hidden">
           {currentStep === -1 && (
-            <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="flex-1 flex items-center justify-center">
               <p className="font-sans text-[#0A0A0A]/25 text-sm tracking-wider uppercase">
                 Scroll to reveal each stage
               </p>
             </div>
           )}
           {steps.map((step, si) => (
-            <LayerBand
-              key={si}
-              step={si}
-              title={step.title}
-              description={step.description}
-              images={step.images}
-              visible={si <= currentStep}
-              isLatest={si === currentStep}
-              total={total}
-            />
+            si <= currentStep && (
+              <LayerBand
+                key={si}
+                step={si}
+                title={step.title}
+                description={step.description}
+                images={step.images}
+                isLatest={si === currentStep}
+                total={total}
+                revealedCount={currentStep + 1}
+              />
+            )
           ))}
         </div>
       </div>
@@ -306,72 +298,65 @@ function LayerBand({
   title,
   description,
   images,
-  visible,
   isLatest,
   total,
+  revealedCount,
 }: {
   step: number;
   title: string;
   description: string;
   images: string[];
-  visible: boolean;
   isLatest: boolean;
   total: number;
+  revealedCount: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ref.current) return;
-    if (visible && isLatest) {
+    if (isLatest) {
       gsap.fromTo(ref.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" },
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.45, ease: "power2.out" },
       );
-    } else if (visible && !isLatest) {
-      gsap.to(ref.current, { opacity: 0.5, duration: 0.3, ease: "power1.out" });
     } else {
-      gsap.set(ref.current, { opacity: 0, y: 30 });
+      gsap.to(ref.current, { opacity: 0.45, duration: 0.3, ease: "power1.out" });
     }
-  }, [visible, isLatest]);
+  }, [isLatest]);
 
-  const bandHeight = `${Math.floor(100 / total) - 1}%`;
+  // Dynamic height: bands share space equally based on how many are revealed
+  const bandHeight = `${Math.floor(100 / Math.max(revealedCount, 1))}%`;
 
   return (
     <div
       ref={ref}
-      className="absolute left-0 right-0 flex items-center gap-6 px-2"
-      style={{
-        bottom: `${step * (100 / total)}%`,
-        height: bandHeight,
-        opacity: 0,
-        borderBottom: step < total - 1 ? "1px solid rgba(10,10,10,0.08)" : "none",
-      }}
+      className="flex items-center gap-6 px-2 border-b border-[#0A0A0A]/8 flex-shrink-0"
+      style={{ height: bandHeight, minHeight: "60px", opacity: 0 }}
     >
       {/* Left: step info */}
-      <div className="w-[30%] flex-shrink-0 flex items-center gap-4">
+      <div className="w-[28%] flex-shrink-0 flex items-center gap-4">
         <span
-          className="font-serif text-[#0A0A0A]/20 tabular-nums leading-none"
-          style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)", fontWeight: 300 }}
+          className="font-serif text-[#0A0A0A]/15 tabular-nums leading-none"
+          style={{ fontSize: "clamp(1.8rem, 3.5vw, 3rem)", fontWeight: 300 }}
         >
           {String(step + 1).padStart(2, "0")}
         </span>
         <div>
-          <h3 className="font-sans text-[13px] font-semibold text-[#0A0A0A] leading-tight uppercase tracking-wider">
+          <h3 className="font-sans text-[12px] font-semibold text-[#0A0A0A] leading-tight uppercase tracking-wider">
             {title}
           </h3>
-          <p className="font-sans text-[11px] text-[#0A0A0A]/55 leading-snug mt-1 max-w-[220px]">
+          <p className="font-sans text-[10px] text-[#0A0A0A]/50 leading-snug mt-0.5 max-w-[200px]">
             {description}
           </p>
         </div>
       </div>
 
       {/* Right: image thumbnails */}
-      <div className="flex-1 flex gap-2 overflow-hidden">
+      <div className="flex-1 flex gap-2 items-center overflow-hidden h-[85%]">
         {images.map((src, i) => (
           <div
             key={i}
             className="h-full aspect-[3/2] rounded overflow-hidden flex-shrink-0 bg-[#0A0A0A]/5"
-            style={{ maxHeight: "90%" }}
           >
             <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
           </div>
@@ -381,39 +366,29 @@ function LayerBand({
   );
 }
 
-function StepText({
+function SingleStepText({
   step,
   title,
   description,
-  visible,
 }: {
   step: number;
   title: string;
   description: string;
-  visible: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ref.current) return;
-    if (visible) {
-      gsap.fromTo(ref.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
-      );
-    } else {
-      gsap.to(ref.current, { opacity: 0, y: -10, duration: 0.2, ease: "power1.in" });
-    }
-  }, [visible]);
+    gsap.fromTo(ref.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" },
+    );
+  }, []);
 
   return (
-    <div
-      ref={ref}
-      className="absolute inset-x-0 top-0"
-      style={{ opacity: 0 }}
-    >
+    <div ref={ref}>
       <div className="flex items-baseline gap-3 mb-3">
-        <span className="font-serif text-[#0A0A0A]/25 text-4xl tabular-nums" style={{ fontWeight: 300 }}>
+        <span className="font-serif text-[#0A0A0A]/20 text-4xl tabular-nums" style={{ fontWeight: 300 }}>
           {String(step + 1).padStart(2, "0")}
         </span>
         <div className="w-8 h-px bg-[#0A0A0A]/20" />
@@ -431,53 +406,35 @@ function StepText({
 function CollageImages({
   step,
   images,
-  visible,
   isLatest,
 }: {
   step: number;
   images: string[];
-  visible: boolean;
   isLatest: boolean;
 }) {
   const groupRef = useRef<HTMLDivElement>(null);
 
-  // Pre-computed positions for each step's images — uses gsap.utils.random
-  // pattern from the skill for organic scattered feel
   const positions = useRef(
     images.map((_, i) => ({
-      left: `${15 + step * 8 + i * 18 + (Math.random() - 0.5) * 12}%`,
-      top: `${10 + step * 10 + i * 8 + (Math.random() - 0.5) * 10}%`,
+      left: `${10 + step * 7 + i * 16 + (Math.random() - 0.5) * 10}%`,
+      top: `${8 + step * 9 + i * 7 + (Math.random() - 0.5) * 8}%`,
       rotate: (Math.random() - 0.5) * 8,
-      width: `${22 + Math.random() * 8}%`,
+      width: `${24 + Math.random() * 8}%`,
     })),
   );
 
   useEffect(() => {
     if (!groupRef.current) return;
     const imgs = groupRef.current.querySelectorAll("[data-collage-img]");
-    if (visible && isLatest) {
+    if (isLatest) {
       gsap.fromTo(imgs,
         { opacity: 0, scale: 0.85, y: 30 },
-        {
-          opacity: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.5,
-          stagger: 0.08,
-          ease: "power2.out",
-        },
+        { opacity: 1, scale: 1, y: 0, duration: 0.5, stagger: 0.08, ease: "power2.out" },
       );
-    } else if (visible && !isLatest) {
-      gsap.to(imgs, {
-        opacity: 0.4,
-        filter: "saturate(0.4)",
-        duration: 0.3,
-        ease: "power1.out",
-      });
     } else {
-      gsap.set(imgs, { opacity: 0, scale: 0.85, y: 30 });
+      gsap.to(imgs, { opacity: 0.35, filter: "saturate(0.3)", duration: 0.3, ease: "power1.out" });
     }
-  }, [visible, isLatest]);
+  }, [isLatest]);
 
   return (
     <div ref={groupRef} className="absolute inset-0" style={{ zIndex: step + 1 }}>
