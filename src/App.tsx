@@ -21,6 +21,7 @@ import SocialProofSlide from "./components/slides/SocialProofSlide";
 import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
 import ComparisonTableSlide from "./components/slides/ComparisonTableSlide";
 import FrameworkSlide from "./components/slides/FrameworkSlide";
+import F1ShowcaseSlide from "./components/slides/F1ShowcaseSlide";
 
 import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
 
@@ -240,6 +241,17 @@ function App() {
           title="Capability matrix"
           subtitle="The same comparison, presented as a neutral matrix — pick whichever variant suits the deck."
         />
+
+        {/* 29. F1 Showcase — full-bleed 3D Formula 1 car. Wheel/keyboard
+             advances through 6 cinematic camera beats; once exhausted, the
+             next gesture passes through to the deck (same hijack pattern as
+             FrameworkSlide / InteractivePhone). NO Lenis. NO ScrollTrigger. */}
+        <F1ShowcaseSlide id="f1-showcase" />
+
+        {/* 30. Hand-off verification — clean StatementSlide-style placeholder
+             so we can confirm the F1 hands off to the deck cleanly after
+             beat 6. Replace with whatever slide you want here. */}
+        <StatementSlide />
 
         </HorizontalDeck>
       </SmoothScroll>
