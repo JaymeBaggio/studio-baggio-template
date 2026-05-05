@@ -26,7 +26,8 @@ import gsap from "gsap";
 import Slide from "../Slide";
 
 // ──────────────────────────────────────────────
-// 6 hero beats — full 360° rotation, cinematic camera arc.
+// 6 hero beats — TWO FULL 360° rotations across the slide (4π total).
+// Each gesture spins the F1 ~144°, long enough to feel cinematic, not whippy.
 // rotY decreases monotonically so the F1 spins one continuous direction.
 // ──────────────────────────────────────────────
 type Beat = {
@@ -36,12 +37,12 @@ type Beat = {
 };
 
 const BEATS: Beat[] = [
-  { rotY: 0,                camera: [4.0, 1.2, 5.2],  lookAt: [0, 0.55, 0] },     // 3/4 front hero
-  { rotY: -Math.PI * 0.5,   camera: [0.2, 0.9, 5.5],  lookAt: [0, 0.55, 0] },     // pure side
-  { rotY: -Math.PI * 1.0,   camera: [-3.6, 1.0, -4.0], lookAt: [0, 0.55, 0] },    // rear quarter
-  { rotY: -Math.PI * 1.5,   camera: [0.0, 6.0, -2.4], lookAt: [0, 0.3, 0] },      // top down
-  { rotY: -Math.PI * 2.0,   camera: [3.6, 1.2, 3.6],  lookAt: [0, 0.55, 0] },     // front quarter close
-  { rotY: -Math.PI * 2.5,   camera: [4.5, 1.5, 5.6],  lookAt: [0, 0.55, 0] },     // settle, back to hero
+  { rotY: 0,                camera: [4.0, 1.2, 5.2],  lookAt: [0, 0.55, 0] },    // start: 3/4 front hero
+  { rotY: -Math.PI * 0.8,   camera: [0.2, 0.9, 5.5],  lookAt: [0, 0.55, 0] },    // ~144° — side-rear
+  { rotY: -Math.PI * 1.6,   camera: [-3.6, 1.0, -4.0], lookAt: [0, 0.55, 0] },   // ~288° — rear quarter
+  { rotY: -Math.PI * 2.4,   camera: [0.0, 6.0, -2.4], lookAt: [0, 0.3, 0] },     // ~432° — top-down (1.2 rev)
+  { rotY: -Math.PI * 3.2,   camera: [3.6, 1.2, 3.6],  lookAt: [0, 0.55, 0] },    // ~576° — front quarter close
+  { rotY: -Math.PI * 4.0,   camera: [4.5, 1.5, 5.6],  lookAt: [0, 0.55, 0] },    // 2 full rotations, back to hero
 ];
 
 // ──────────────────────────────────────────────
@@ -197,7 +198,8 @@ export default function F1ShowcaseSlide({ id = "f1-showcase" }: { id?: string })
     return () => window.removeEventListener("slide-change", handler);
   }, []);
 
-  // Animate state to the target beat with GSAP
+  // Animate state to the target beat with GSAP — slow + buttery.
+  // 4s tween with sine.out (no spike at start, no harsh decel — gentlest curve).
   useEffect(() => {
     const target = BEATS[currentBeat];
     gsap.to(stateRef.current, {
@@ -208,8 +210,8 @@ export default function F1ShowcaseSlide({ id = "f1-showcase" }: { id?: string })
       lookX: target.lookAt[0],
       lookY: target.lookAt[1],
       lookZ: target.lookAt[2],
-      duration: 1.0,
-      ease: "power2.inOut",
+      duration: 4.0,
+      ease: "sine.out",
       overwrite: true,
     });
   }, [currentBeat]);
@@ -221,7 +223,9 @@ export default function F1ShowcaseSlide({ id = "f1-showcase" }: { id?: string })
     if (next < 0 || next >= total) return false;
     cooldownRef.current = true;
     setCurrentBeat(next);
-    setTimeout(() => { cooldownRef.current = false; }, 600);
+    // Cooldown ~40% of tween — chains scrolls smoothly via overwrite while
+    // preventing rapid-fire gestures from queueing instant transitions.
+    setTimeout(() => { cooldownRef.current = false; }, 1600);
     return true;
   }, [currentBeat, total]);
 
