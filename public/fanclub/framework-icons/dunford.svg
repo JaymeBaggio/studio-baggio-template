@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <g font-family="Satoshi, system-ui, sans-serif">
+    <rect x="80" y="35" width="80" height="28" rx="6" fill="#183263"/>
+    <text x="120" y="53" text-anchor="middle" font-size="9" fill="#FFF98D" font-weight="700" letter-spacing="0.8">POSITIONING</text>
+    <rect x="8" y="6" width="68" height="20" rx="4" fill="#F96090" fill-opacity="0.15" stroke="#F96090" stroke-width="1"/>
+    <text x="42" y="19" text-anchor="middle" font-size="7" fill="#F96090" font-weight="600">Alternatives</text>
+    <line x1="76" y1="26" x2="92" y2="35" stroke="#183263" stroke-width="1" opacity="0.3"/>
+    <rect x="164" y="6" width="68" height="20" rx="4" fill="#183263" fill-opacity="0.08" stroke="#183263" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="198" y="19" text-anchor="middle" font-size="7" fill="#183263" opacity="0.6" font-weight="600">Attributes</text>
+    <line x1="164" y1="26" x2="148" y2="35" stroke="#183263" stroke-width="1" opacity="0.3"/>
+    <rect x="8" y="78" width="68" height="20" rx="4" fill="#183263" fill-opacity="0.08" stroke="#183263" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="42" y="91" text-anchor="middle" font-size="7" fill="#183263" opacity="0.6" font-weight="600">Value</text>
+    <line x1="76" y1="78" x2="92" y2="63" stroke="#183263" stroke-width="1" opacity="0.3"/>
+    <rect x="86" y="78" width="68" height="20" rx="4" fill="#183263" fill-opacity="0.08" stroke="#183263" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="120" y="91" text-anchor="middle" font-size="7" fill="#183263" opacity="0.6" font-weight="600">Customer</text>
+    <line x1="120" y1="63" x2="120" y2="78" stroke="#183263" stroke-width="1" opacity="0.3"/>
+    <rect x="164" y="78" width="68" height="20" rx="4" fill="#183263" fill-opacity="0.08" stroke="#183263" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="198" y="91" text-anchor="middle" font-size="7" fill="#183263" opacity="0.6" font-weight="600">Category</text>
+    <line x1="164" y1="78" x2="148" y2="63" stroke="#183263" stroke-width="1" opacity="0.3"/>
+  </g>
+  <text x="42" y="112" font-family="Satoshi, system-ui, sans-serif" font-size="7" fill="#F96090" font-weight="600" letter-spacing="0.5">FC: WHAT ELSE WOULD THEY DO?</text>
+</svg>

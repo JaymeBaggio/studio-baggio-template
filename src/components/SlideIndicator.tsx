@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const SLIDE_COUNT = 30; // 24 production + 2 framework variants + 2 comparison-table variants + F1 showcase + handoff verification
+const SLIDE_COUNT = 32; // 24 production + 2 framework variants + 2 comparison-table variants + F1 showcase + handoff verification + 2 lifted from FanClub deck (IntelMap, OutputWall)
 
 export default function SlideIndicator() {
   const [activeIndex, setActiveIndex] = useState(0);

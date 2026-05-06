@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <!-- Hormozi Value Equation -->
+  <g font-family="Georgia, 'Times New Roman', serif" fill="#183263">
+    <!-- Numerator: Dream x Likelihood -->
+    <text x="68" y="38" font-size="18" font-weight="700" text-anchor="middle">Dream</text>
+    <text x="104" y="36" font-size="13" text-anchor="middle" opacity="0.4">x</text>
+    <text x="164" y="38" font-size="18" text-anchor="middle" font-weight="700">
+      <tspan fill="#F96090">Likelihood</tspan>
+    </text>
+    <!-- Fraction line -->
+    <rect x="30" y="50" width="186" height="2.5" rx="1" fill="#183263"/>
+    <!-- Denominator: Time x Effort -->
+    <text x="78" y="76" font-size="16" text-anchor="middle" opacity="0.4">Time</text>
+    <text x="112" y="74" font-size="13" text-anchor="middle" opacity="0.3">x</text>
+    <text x="150" y="76" font-size="16" text-anchor="middle" opacity="0.4">Effort</text>
+  </g>
+  <!-- Equals -->
+  <g fill="#183263">
+    <rect x="222" y="46" width="12" height="2.5" rx="1"/>
+    <rect x="222" y="53" width="12" height="2.5" rx="1"/>
+  </g>
+  <!-- Biggest lever label -->
+  <text x="120" y="100" text-anchor="middle" font-family="Satoshi, system-ui, sans-serif" font-size="8" fill="#F96090" font-weight="600" letter-spacing="1">FC'S BIGGEST LEVER</text>
+</svg>

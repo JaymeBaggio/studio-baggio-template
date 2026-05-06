@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <!-- 5 Stages of Awareness — ascending bars with labels -->
+  <!-- Bars -->
+  <rect x="10" y="80" width="36" height="20" rx="3" fill="#183263" opacity="0.2"/>
+  <rect x="52" y="60" width="36" height="40" rx="3" fill="#F96090" opacity="0.7"/>
+  <rect x="94" y="42" width="36" height="58" rx="3" fill="#F96090"/>
+  <rect x="136" y="28" width="36" height="72" rx="3" fill="#183263" opacity="0.25"/>
+  <rect x="178" y="16" width="36" height="84" rx="3" fill="#183263" opacity="0.15"/>
+  <!-- Stage labels -->
+  <text x="28" y="112" text-anchor="middle" font-family="Satoshi, system-ui, sans-serif" font-size="8" fill="#183263" opacity="0.5">Unaware</text>
+  <text x="70" y="112" text-anchor="middle" font-family="Satoshi, system-ui, sans-serif" font-size="8" fill="#F96090" font-weight="600">Problem</text>
+  <text x="112" y="112" text-anchor="middle" font-family="Satoshi, system-ui, sans-serif" font-size="8" fill="#F96090" font-weight="700">Solution</text>
+  <text x="154" y="112" text-anchor="middle" font-family="Satoshi, system-ui, sans-serif" font-size="8" fill="#183263" opacity="0.5">Product</text>
+  <text x="196" y="112" text-anchor="middle" font-family="Satoshi, system-ui, sans-serif" font-size="8" fill="#183263" opacity="0.4">Most</text>
+  <!-- FC marker -->
+  <text x="91" y="36" font-family="Satoshi, system-ui, sans-serif" font-size="7" fill="#F96090" font-weight="700" letter-spacing="0.5">FC 2–3</text>
+</svg>

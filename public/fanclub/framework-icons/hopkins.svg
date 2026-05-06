@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <g font-family="Satoshi, system-ui, sans-serif">
+    <rect x="16" y="12" width="90" height="68" rx="6" fill="#183263" fill-opacity="0.06" stroke="#183263" stroke-width="1.5" stroke-opacity="0.25"/>
+    <text x="61" y="32" text-anchor="middle" font-size="22" fill="#183263" font-weight="800" opacity="0.2">A</text>
+    <rect x="32" y="48" width="14" height="24" rx="2" fill="#183263" opacity="0.15"/>
+    <rect x="52" y="40" width="14" height="32" rx="2" fill="#183263" opacity="0.2"/>
+    <rect x="72" y="52" width="14" height="20" rx="2" fill="#183263" opacity="0.12"/>
+    <rect x="124" y="12" width="90" height="68" rx="6" fill="#F96090" fill-opacity="0.08" stroke="#F96090" stroke-width="1.5"/>
+    <text x="169" y="32" text-anchor="middle" font-size="22" fill="#F96090" font-weight="800" opacity="0.4">B</text>
+    <rect x="140" y="38" width="14" height="34" rx="2" fill="#F96090" opacity="0.4"/>
+    <rect x="160" y="28" width="14" height="44" rx="2" fill="#F96090" opacity="0.6"/>
+    <rect x="180" y="34" width="14" height="38" rx="2" fill="#F96090" opacity="0.4"/>
+    <text x="115" y="52" text-anchor="middle" font-size="10" fill="#183263" opacity="0.3" font-weight="700">VS</text>
+    <text x="169" y="92" text-anchor="middle" font-size="8" fill="#F96090" font-weight="700" letter-spacing="0.8">WINNER</text>
+    <text x="120" y="112" text-anchor="middle" font-size="7" fill="#183263" opacity="0.45" font-weight="600" letter-spacing="0.5">TEST EVERYTHING. TRUST DATA.</text>
+  </g>
+</svg>

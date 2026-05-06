@@ -22,6 +22,8 @@ import ProductShowcaseSlide from "./components/slides/ProductShowcaseSlide";
 import ComparisonTableSlide from "./components/slides/ComparisonTableSlide";
 import FrameworkSlide from "./components/slides/FrameworkSlide";
 import F1ShowcaseSlide from "./components/slides/F1ShowcaseSlide";
+import IntelMapSlide from "./components/slides/IntelMapSlide";
+import OutputWallSlide from "./components/slides/OutputWallSlide";
 
 import { InteractivePhoneProvider } from "./components/interactive-phone/InteractivePhoneContext";
 
@@ -252,6 +254,13 @@ function App() {
              so we can confirm the F1 hands off to the deck cleanly after
              beat 6. Replace with whatever slide you want here. */}
         <StatementSlide />
+
+        {/* ═══════════ 31–32. LIFTED FROM FANCLUB 22 APRIL DECK ═══════════ */}
+        {/* 31. Intel Map — "Build the Context" dense thought-cloud */}
+        <IntelMapSlide />
+
+        {/* 32. Output Wall — "Translate into Assets" devices + asset wall */}
+        <OutputWallSlide />
 
         </HorizontalDeck>
       </SmoothScroll>
