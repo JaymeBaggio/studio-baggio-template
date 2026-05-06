@@ -184,7 +184,10 @@ function playSlideContent(slide: HTMLElement) {
 
   if (items.length === 0) return;
 
-  const stagger = 0.1;
+  // Cap total stagger so dense slides (many .deck-animate items) finish fast.
+  // (Matches FanClub deck timing — needed for IntelMap which has ~37 items
+  // and was crawling at fixed 0.1 stagger.)
+  const stagger = Math.min(0.05, 0.4 / Math.max(items.length, 1));
   const dur = 0.7;
 
   if (animType === "scale") {

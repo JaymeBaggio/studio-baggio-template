@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
 import gsap from "gsap";
 import { useInteractivePhone } from "./InteractivePhoneContext";
@@ -23,7 +23,12 @@ interface InteractivePhoneProps {
 }
 
 export default function InteractivePhone({ className = "", style = {} }: InteractivePhoneProps) {
-  const { isExpanded, expand, close } = useInteractivePhone();
+  // Per-instance ID so multiple <InteractivePhone /> instances on the same page
+  // don't fight over the global expanded state. Each instance only renders its
+  // expanded portal when expandedId === its own id.
+  const instanceId = useId();
+  const { expandedId, expand, close } = useInteractivePhone();
+  const isExpanded = expandedId === instanceId;
   const dockedRef = useRef<HTMLDivElement>(null);
   const expandedWrapperRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
@@ -92,7 +97,7 @@ export default function InteractivePhone({ className = "", style = {} }: Interac
         <DockedPhone3D
           onClick={() => {
             if (isExpanded) return;
-            expand(dockedRef.current);
+            expand(instanceId, dockedRef.current);
           }}
         />
 
